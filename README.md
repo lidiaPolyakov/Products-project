@@ -1,4 +1,4 @@
-# Project Title
+# InsideOut
 
 Provide a brief description of your project here. Explain what it's about and its purpose.
 
