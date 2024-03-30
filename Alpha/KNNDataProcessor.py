@@ -13,6 +13,8 @@ class KNNDataProcessor:
         for col_info in self.common_columns:
             datatype = col_info["datatype"]
             column_name = col_info["column"]["name"][df.name]
+            if column_name is None:
+                continue
             if datatype == "category":
                 le = LabelEncoder()
                 df_copy[column_name] = le.fit_transform(df_copy[column_name].astype(str))
@@ -38,7 +40,8 @@ class KNNDataProcessor:
                 raise ValueError(f"Missing input for column: {dataset_column_name}")
 
             input_val = user_input[dataset_column_name]
-
+            if dataset_column_name is None:
+                continue
             if col_info["datatype"] == "category":
                 mapped_input_val = self.map_input_to_dataset_value(input_val, col_info, dataset_name)
                 input_val = self.label_encoders[dataset_column_name].transform([str(mapped_input_val)])[0]
@@ -52,7 +55,10 @@ class KNNDataProcessor:
     def find_nearest_neighbor(self, user_input_processed):
         relevant_columns = []
         for col_info in self.common_columns:
-            relevant_columns.append(col_info["column"]["name"][self.df_copy.name])
+            dataset_column_name = col_info["column"]["name"][self.df_copy.name]
+            if dataset_column_name is None:
+                continue
+            relevant_columns.append(dataset_column_name)
         df_copy = self.df_copy.dropna(subset=relevant_columns)
         df_processed_relevant = df_copy[relevant_columns]
         knn_input = [list(user_input_processed.values())]
@@ -67,6 +73,8 @@ class KNNDataProcessor:
         # inverse transform the row to get the original values
         for col_info in self.common_columns:
             dataset_column_name = col_info["column"]["name"][self.df_copy.name]
+            if dataset_column_name is None:
+                continue
             if col_info["datatype"] == "category":
                 row[dataset_column_name] = self.label_encoders[dataset_column_name].inverse_transform([row[dataset_column_name]])[0]
             elif dataset_column_name in self.scalers:

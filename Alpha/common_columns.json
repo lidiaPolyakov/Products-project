@@ -102,5 +102,41 @@
 				}
 			}
 		}
+	},
+	{
+		"datatype": "category",
+		"standard_column_name": "smoking history",
+		"standard_input_values": {
+			"categories": [
+				"Currently smoking",
+				"Smoked in the past",
+				"Never smoked",
+				"Unknown"
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": "SMOKING_HISTORY",
+				"ds4": null
+			},
+			"categories": {
+				"Currently smoking": {
+					"ds2": "Currently smoking",
+					"ds4": null
+				},
+				"Smoked in the past": {
+					"ds2": "Smoked in the past",
+					"ds4": null
+				},
+				"Never smoked": {
+					"ds2": "Never smoked",
+					"ds4": null
+				},
+				"Unknown": {
+					"ds2": "Unknown",
+					"ds4": null
+				}
+			}
+		}
 	}
 ]
