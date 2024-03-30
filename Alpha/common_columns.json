@@ -1,0 +1,106 @@
+[
+	{
+		"datatype": "category",
+		"standard_column_name": "gender",
+		"standard_input_values": {
+			"categories": [
+				"M",
+				"F"
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": "GENDER",
+				"ds4": "gender"
+			},
+			"categories": {
+				"M": {
+					"ds2": "Male",
+					"ds4": "M"
+				},
+				"F": {
+					"ds2": "Female",
+					"ds4": "F"
+				}
+			}
+		}
+	},
+	{
+		"datatype": "int",
+		"standard_column_name": "age",
+		"standard_input_values": {
+			"range": [
+				0,
+				120
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": "AGE_AT_DIAGNOSIS",
+				"ds4": "age"
+			}
+		}
+	},
+	{
+		"datatype": "category",
+		"standard_column_name": "race",
+		"standard_input_values": {
+			"categories": [
+				"Caucasian",
+				"African American",
+				"Asian",
+				"Other/Unknown"
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": "RACE",
+				"ds4": "ethnicity"
+			},
+			"categories": {
+				"Caucasian": {
+					"ds2": "White(01)",
+					"ds4": "Caucasian"
+				},
+				"African American": {
+					"ds2": "Black or African American(03)",
+					"ds4": "African American"
+				},
+				"Asian": {
+					"ds2": "Asian(05)",
+					"ds4": "Asian"
+				},
+				"Other/Unknown": {
+					"ds2": "Unknown(99)",
+					"ds4": "Other/Unknown"
+				}
+			}
+		}
+	},
+	{
+		"datatype": "category",
+		"standard_column_name": "vital status",
+		"standard_input_values": {
+			"categories": [
+				"Dead",
+				"Alive"
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": "VITAL_STATUS",
+				"ds4": "hospital_death"
+			},
+			"categories": {
+				"Dead": {
+					"ds2": "Dead",
+					"ds4": 1
+				},
+				"Alive": {
+					"ds2": "Alive",
+					"ds4": 0
+				}
+			}
+		}
+	}
+]
