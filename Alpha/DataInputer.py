@@ -19,6 +19,13 @@ class DataInputer:
         except ValueError:
             return False
 
+    def validate_float_input(self, input_value, value_range):
+        try:
+            value = float(input_value)
+            return value_range[0] <= value <= value_range[1]
+        except ValueError:
+            return False
+
     def get_valid_input(self):
         user_inputs = {}
         for column in self.common_columns:
@@ -41,6 +48,9 @@ class DataInputer:
                 elif datatype == "int":
                     allowed_range = column["standard_input_values"]["range"]
                     valid_input = self.validate_int_input(user_input, allowed_range)
+                elif datatype == "float":
+                    allowed_range = column["standard_input_values"]["range"]
+                    valid_input = self.validate_float_input(user_input, allowed_range)
 
                 if not valid_input:
                     print(f"Invalid input for {column_name}. Please try again.")
@@ -59,6 +69,9 @@ class DataInputer:
                 mock_inputs[column_name] = random.choice(allowed_categories)
             elif datatype == "int":
                 mock_inputs[column_name] = random.randint(column["standard_input_values"]["range"][0], column["standard_input_values"]["range"][1])
+            elif datatype == "float":
+                mock_inputs[column_name] = "%.1f" % random.uniform(column["standard_input_values"]["range"][0], column["standard_input_values"]["range"][1])
+
         return mock_inputs
 
     def prepare_queries(self, input_columns):

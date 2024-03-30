@@ -138,5 +138,21 @@
 				}
 			}
 		}
+	},
+	{
+		"datatype": "float",
+		"standard_column_name": "height_cm",
+		"standard_input_values": {
+			"range": [
+				40,
+				200
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": null,
+				"ds4": "height"
+			}
+		}
 	}
 ]
