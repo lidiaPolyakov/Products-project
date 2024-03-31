@@ -154,5 +154,21 @@
 				"ds4": "height"
 			}
 		}
+	},
+	{
+		"datatype": "float",
+		"standard_column_name": "weight_kg",
+		"standard_input_values": {
+			"range": [
+				35,
+				190
+			]
+		},
+		"column": {
+			"name": {
+				"ds2": null,
+				"ds4": "weight"
+			}
+		}
 	}
 ]
