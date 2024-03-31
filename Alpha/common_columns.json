@@ -144,7 +144,7 @@
 		"standard_column_name": "height_cm",
 		"standard_input_values": {
 			"range": [
-				40,
+				135,
 				200
 			]
 		},
