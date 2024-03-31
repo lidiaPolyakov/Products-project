@@ -36,12 +36,12 @@ class KNNDataProcessor:
         processed_input = {}
         for col_info in self.common_columns:
             dataset_column_name = col_info["column"]["name"][dataset_name]
+            if dataset_column_name is None:
+                continue
             if dataset_column_name not in user_input:
                 raise ValueError(f"Missing input for column: {dataset_column_name}")
 
             input_val = user_input[dataset_column_name]
-            if dataset_column_name is None:
-                continue
             if col_info["datatype"] == "category":
                 mapped_input_val = self.map_input_to_dataset_value(input_val, col_info, dataset_name)
                 input_val = self.label_encoders[dataset_column_name].transform([str(mapped_input_val)])[0]

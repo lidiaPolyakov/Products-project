@@ -79,8 +79,13 @@ class DataInputer:
         query_for_ds4 = {}
         for input_column, common_column in zip(input_columns, self.common_columns):
             if input_column != common_column["standard_column_name"]: continue
+            
             df2_column_name = common_column["column"]["name"]["ds2"]
+            if df2_column_name is not None:
+                query_for_ds2[df2_column_name] = input_columns[input_column]
+            
             df4_column_name = common_column["column"]["name"]["ds4"]
-            query_for_ds2[df2_column_name] = input_columns[input_column]
-            query_for_ds4[df4_column_name] = input_columns[input_column]
+            if df4_column_name is not None:
+                query_for_ds4[df4_column_name] = input_columns[input_column]
+
         return query_for_ds2, query_for_ds4
