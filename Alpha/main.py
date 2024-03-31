@@ -21,14 +21,18 @@ def main():
     knn_data_processor_ds2 = KNNDataProcessor(common_columns, df2)
     user_input_processed_df2 = knn_data_processor_ds2.prepare_user_input_for_knn(query_ds2, "ds2")
     nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor(user_input_processed_df2)
+    print(f"Query for dataset2: {query_ds2}")
     print("Nearest neighbor in dataset2:")
     print(nearest_neighbor_row_ds2)
+    print()
 
     knn_data_processor_ds4 = KNNDataProcessor(common_columns, df4)
     user_input_processed_df4 = knn_data_processor_ds4.prepare_user_input_for_knn(query_ds4, "ds4")
     nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor(user_input_processed_df4)
+    print(f"Query for dataset4: {query_ds4}")
     print("Nearest neighbor in dataset4:")
     print(nearest_neighbor_row_ds4)
+    print()
 
 if __name__ == '__main__':
     main()
