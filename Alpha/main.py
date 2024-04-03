@@ -1,6 +1,7 @@
 import json
 from DataInputer import DataInputer
 from KNNDataProcessor import KNNDataProcessor
+from DS4PreProcessor import DS4PreProcessor
 import pandas as pd
 
 def main():
@@ -16,6 +17,8 @@ def main():
     df2.name = 'ds2'
 
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
+    ds4_preprocessor = DS4PreProcessor(df4)
+    df4 = ds4_preprocessor.preprocessed_df4
     df4.name = 'ds4'
 
     knn_data_processor_ds2 = KNNDataProcessor(common_columns, df2)
@@ -33,6 +36,15 @@ def main():
     print("Nearest neighbor in dataset4:")
     print(nearest_neighbor_row_ds4)
     print()
+
+    
+    # from DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
+    # print("Predicting hospital_death using Naive Bayes on dataset4")
+    # predictor = DS4NaiveBayesPredictor(df4)
+    # predictor.train_model()
+    # predictor.save_model('./Alpha/models/DS4NaiveBayesPredictor.pkl')
+    # prediction = predictor.predict(nearest_neighbor_row_ds4)
+    # print(f"Prediction: {prediction}")
 
 if __name__ == '__main__':
     main()
