@@ -3,6 +3,7 @@ import os
 import json
 from DataInputer import DataInputer
 from KNNDataProcessor import KNNDataProcessor
+from DS2.DS2PreProcessor import DS2PreProcessor
 from DS4.DS4PreProcessor import DS4PreProcessor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 
@@ -16,6 +17,8 @@ def main():
     query_ds2, query_ds4 = data_processor.prepare_queries(mock_data)
 
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
+    ds2_preprocessor = DS2PreProcessor(df2)
+    df2 = ds2_preprocessor.preprocessed_df2
     df2.name = 'ds2'
 
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
