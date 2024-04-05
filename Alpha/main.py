@@ -3,6 +3,8 @@ from DataInputer import DataInputer
 from KNNDataProcessor import KNNDataProcessor
 from DS4PreProcessor import DS4PreProcessor
 import pandas as pd
+import os
+from DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 
 def main():
 
@@ -38,13 +40,14 @@ def main():
     print()
 
     
-    # from DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
-    # print("Predicting hospital_death using Naive Bayes on dataset4")
-    # predictor = DS4NaiveBayesPredictor(df4)
-    # predictor.train_model()
-    # predictor.save_model('./Alpha/models/DS4NaiveBayesPredictor.pkl')
-    # prediction = predictor.predict(nearest_neighbor_row_ds4)
-    # print(f"Prediction: {prediction}")
+    print("Predicting hospital_death using Naive Bayes on dataset4")
+    predictor = DS4NaiveBayesPredictor(df4)
+    path = './Alpha/models/DS4NaiveBayesPredictor.pkl'
+    if not os.path.exists(path):
+        predictor.train_model(path)
+
+    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    print(f"Prediction: {prediction}")
 
 if __name__ == '__main__':
     main()
