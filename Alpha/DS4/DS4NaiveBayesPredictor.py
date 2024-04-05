@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import joblib
 from sklearn.impute import SimpleImputer
 from sklearn.naive_bayes import GaussianNB
@@ -58,6 +59,8 @@ class DS4NaiveBayesPredictor:
         print(classification_report(y_test, y_pred))
 
         if model_path is not None:
+            if '/' in model_path:
+                os.makedirs(model_path[:model_path.rfind('/')], exist_ok=True)
             joblib.dump(model, model_path)
 
     def __preprocess_row(self, row):

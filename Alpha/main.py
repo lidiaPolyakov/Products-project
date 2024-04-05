@@ -1,10 +1,10 @@
+import pandas as pd
+import os
 import json
 from DataInputer import DataInputer
 from KNNDataProcessor import KNNDataProcessor
-from DS4PreProcessor import DS4PreProcessor
-import pandas as pd
-import os
-from DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
+from DS4.DS4PreProcessor import DS4PreProcessor
+from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 
 def main():
 
