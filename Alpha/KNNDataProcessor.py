@@ -22,7 +22,11 @@ class KNNDataProcessor:
             else:
                 scaler = StandardScaler()
                 df_copy[column_name] = scaler.fit_transform(df_copy[[column_name]])
-                scalers[column_name] = scaler
+                scalers[column_name] = {
+                    "scaler": scaler,
+                    "max_scaled": df_copy[column_name].max(),
+                    "min_scaled": df_copy[column_name].min()
+                }
         self.df_copy = df_copy
         self.label_encoders = label_encoders
         self.scalers = scalers
@@ -46,11 +50,25 @@ class KNNDataProcessor:
                 mapped_input_val = self.map_input_to_dataset_value(input_val, col_info, dataset_name)
                 input_val = self.label_encoders[dataset_column_name].transform([str(mapped_input_val)])[0]
             elif dataset_column_name in self.scalers:
-                input_val = self.scalers[dataset_column_name].transform([[input_val]])[0, 0]
+                input_val = self.scalers[dataset_column_name]["scaler"].transform([[input_val]])[0, 0]
 
             processed_input[dataset_column_name] = input_val
 
         return processed_input
+
+    def nearest_neighbor_metric(self, x, y, label_encoders, scalers, columns):
+        total_distance = 0
+        categorical_columns = label_encoders.keys()
+        numeric_columns = scalers.keys()
+        for i, col in enumerate(columns):
+            if col in numeric_columns:
+                # scaling by min-max
+                numerator = (x[i] - y[i])
+                denominator = (scalers[col]["max_scaled"] - scalers[col]["min_scaled"])
+                total_distance += (numerator / denominator) ** 2
+            elif (col in categorical_columns) and (x[i] != y[i]):
+                total_distance += 1
+        return total_distance ** 0.5
 
     def find_nearest_neighbor(self, user_input_processed):
         relevant_columns = []
@@ -61,10 +79,12 @@ class KNNDataProcessor:
             relevant_columns.append(dataset_column_name)
         df_copy = self.df_copy.dropna(subset=relevant_columns)
         df_processed_relevant = df_copy[relevant_columns]
-        knn_input = [list(user_input_processed.values())]
 
-        knn = NearestNeighbors(n_neighbors=1, metric='cosine')
+        metric = lambda u, v: self.nearest_neighbor_metric(u, v, self.label_encoders, self.scalers, relevant_columns)
+        knn = NearestNeighbors(n_neighbors=1, metric=metric)
         knn.fit(df_processed_relevant)
+
+        knn_input = [list(user_input_processed.values())]
         nearest_neighbor_index = knn.kneighbors(knn_input, return_distance=False)[0][0]
 
         # get the row of original values for the nearest neighbor
@@ -78,5 +98,5 @@ class KNNDataProcessor:
             if col_info["datatype"] == "category":
                 row[dataset_column_name] = self.label_encoders[dataset_column_name].inverse_transform([row[dataset_column_name]])[0]
             elif dataset_column_name in self.scalers:
-                row[dataset_column_name] = self.scalers[dataset_column_name].inverse_transform([[row[dataset_column_name]]])[0, 0]
+                row[dataset_column_name] = self.scalers[dataset_column_name]["scaler"].inverse_transform([[row[dataset_column_name]]])[0, 0]
         return row
