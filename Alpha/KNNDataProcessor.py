@@ -70,6 +70,18 @@ class KNNDataProcessor:
                 total_distance += 1
         return total_distance ** 0.5
 
+    def inverse_transform_row(self, row):
+        # inverse transform the row to get the original values
+        for col_info in self.common_columns:
+            dataset_column_name = col_info["column"]["name"][self.df_copy.name]
+            if dataset_column_name is None:
+                continue
+            if col_info["datatype"] == "category":
+                row[dataset_column_name] = self.label_encoders[dataset_column_name].inverse_transform([row[dataset_column_name]])[0]
+            elif dataset_column_name in self.scalers:
+                row[dataset_column_name] = self.scalers[dataset_column_name]["scaler"].inverse_transform([[row[dataset_column_name]]])[0, 0]
+        return row
+ 
     def find_nearest_neighbor(self, user_input_processed):
         relevant_columns = []
         for col_info in self.common_columns:
@@ -91,12 +103,4 @@ class KNNDataProcessor:
         row = df_copy.iloc[nearest_neighbor_index].copy()
 
         # inverse transform the row to get the original values
-        for col_info in self.common_columns:
-            dataset_column_name = col_info["column"]["name"][self.df_copy.name]
-            if dataset_column_name is None:
-                continue
-            if col_info["datatype"] == "category":
-                row[dataset_column_name] = self.label_encoders[dataset_column_name].inverse_transform([row[dataset_column_name]])[0]
-            elif dataset_column_name in self.scalers:
-                row[dataset_column_name] = self.scalers[dataset_column_name]["scaler"].inverse_transform([[row[dataset_column_name]]])[0, 0]
-        return row
+        return self.inverse_transform_row(row)
