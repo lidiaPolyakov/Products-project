@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 
 class DS4PreProcessor:
     def __init__(self, df4):
@@ -12,9 +11,16 @@ class DS4PreProcessor:
         return self.__categorize_columns()
 
     def __preprocess(self):
+        self.__process_binary_variables()
         self.__update_data_types()
         self.__process_numeric_to_categorical()
         self.__process_string_to_categorical()
+
+    def __process_binary_variables(self):
+        booleans = self.df4_dict[self.df4_dict['Data Type'] == 'binary']["Variable Name"]
+        for boolean in booleans:
+            if boolean in self.df4.columns:
+                self.df4[boolean] = self.df4[boolean].astype("category")
 
     def __update_data_types(self):
         '''Update specific columns to integer and float types as needed'''
