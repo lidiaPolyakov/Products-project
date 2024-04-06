@@ -17,11 +17,11 @@ class DS2PreProcessor:
         self.__convert_binary_to_category()
 
     def __drop_unwanted_columns(self):
-        self.df2 = self.df2.drop(['BlindedIDs', 'PATIENT_ID', 'DC_STUDY_ID', 'MICROARRAY', 'WARNING'], axis=1)
+        self.df2 = self.df2.drop(['PATIENT_ID', 'BlindedIDs', 'DC_STUDY_ID', 'MICROARRAY', 'WARNING', 'TESTTYPE'], axis=1)
 
     def __process_categorycal_columns(self):
         categorycal_columns = [
-            "Stratagene", "SITE", "TESTTYPE", "GENDER", "RACE", "ADJUVANT_CHEMO",
+            "Stratagene", "SITE", "GENDER", "RACE", "ADJUVANT_CHEMO",
             "ADJUVANT_RT", "FIRST_PROGRESSION_OR_RELAPSE", "PATHOLOGIC_N_STAGE",
             "PATHOLOGIC_T_STAGE", "Histologic grade", "SMOKING_HISTORY",
             "SURGICAL_MARGINS", "VITAL_STATUS"
