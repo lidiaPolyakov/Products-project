@@ -6,6 +6,7 @@ from KNNDataProcessor import KNNDataProcessor
 from DS2.DS2PreProcessor import DS2PreProcessor
 from DS4.DS4PreProcessor import DS4PreProcessor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
+from DS4.DS4SVMPredictor import DS4SVMPredictor
 
 def main():
 
@@ -52,5 +53,13 @@ def main():
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
 
+    print("Predicting hospital_death using SVM on dataset4")
+    predictor = DS4SVMPredictor(df4)
+    path = './Alpha/models/DS4SVMPredictor.pkl'
+    if not os.path.exists(path):
+        predictor.train_model(path)
+
+    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    print(f"Prediction: {prediction}")
 if __name__ == '__main__':
     main()
