@@ -62,6 +62,8 @@ class DS4NaiveBayesPredictor:
             if '/' in model_path:
                 os.makedirs(model_path[:model_path.rfind('/')], exist_ok=True)
             joblib.dump(model, model_path)
+        else:
+            self.model = model
 
     def __preprocess_row(self, row):
         row = row.copy()
@@ -93,7 +95,10 @@ class DS4NaiveBayesPredictor:
         return row
 
     def predict(self, row, model_path=None):
-        model = joblib.load(model_path)
+        if model_path is not None:
+            model = joblib.load(model_path)
+        else:
+            model = self.model
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
