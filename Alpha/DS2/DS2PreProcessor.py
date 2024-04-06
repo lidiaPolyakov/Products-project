@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 class DS2PreProcessor:
     def __init__(self, df2):
@@ -12,6 +13,7 @@ class DS2PreProcessor:
     def __preprocess(self):
         self.__drop_unwanted_columns()
         self.__process_categorycal_columns()
+        self.__convert_to_numerical()
         self.__convert_binary_to_category()
 
     def __drop_unwanted_columns(self):
@@ -26,6 +28,11 @@ class DS2PreProcessor:
         ]
         for column in categorycal_columns:
             self.df2[column] = self.df2[column].astype('category')
+
+    def __convert_to_numerical(self):
+        for col in ['MTHS_TO_LAST_CLINICAL_ASSESSMENT', 'MONTHS_TO_LAST_CONTACT_OR_DEATH']:
+            self.df2[col] = self.df2[col].replace('na', np.nan)
+            self.df2[col] = self.df2[col].astype('float64')
 
     def __convert_binary_to_category(self):
         numeric_df = self.df2.select_dtypes(include=['int64', 'float64'])
