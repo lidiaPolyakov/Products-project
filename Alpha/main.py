@@ -47,6 +47,12 @@ def ds2(common_columns, query_ds2):
     print("Nearest neighbor in dataset2:")
     print(nearest_neighbor_row_ds2)
     print()
+    
+    print("Predicting VITAL_STATUS using XGBoost on dataset2")
+    ds2_xgb_predictor = DS2XGBoostPredictor(df2)
+    ds2_xgb_predictor.train_model()
+    ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2)
+    print(f"Prediction: {ds2_xgb_prediction}")
 
 def main():
     with open('./Alpha/common_columns.json') as f:
