@@ -1,3 +1,4 @@
+import pandas as pd
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.neighbors import NearestNeighbors
 
@@ -50,7 +51,8 @@ class KNNDataProcessor:
                 mapped_input_val = self.map_input_to_dataset_value(input_val, col_info, dataset_name)
                 input_val = self.label_encoders[dataset_column_name].transform([str(mapped_input_val)])[0]
             elif dataset_column_name in self.scalers:
-                input_val = self.scalers[dataset_column_name]["scaler"].transform([[input_val]])[0, 0]
+                input_val_df = pd.DataFrame({dataset_column_name: [input_val]})
+                input_val = self.scalers[dataset_column_name]["scaler"].transform(input_val_df)[0, 0]
 
             processed_input[dataset_column_name] = input_val
 
@@ -96,8 +98,8 @@ class KNNDataProcessor:
         knn = NearestNeighbors(n_neighbors=1, metric=metric)
         knn.fit(df_processed_relevant)
 
-        knn_input = [list(user_input_processed.values())]
-        nearest_neighbor_index = knn.kneighbors(knn_input, return_distance=False)[0][0]
+        knn_input_df = pd.DataFrame([user_input_processed.values()], columns=relevant_columns)
+        nearest_neighbor_index = knn.kneighbors(knn_input_df, return_distance=False)[0][0]
 
         # get the row of original values for the nearest neighbor
         row = df_copy.iloc[nearest_neighbor_index].copy()

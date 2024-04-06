@@ -77,7 +77,8 @@ class DS4NaiveBayesPredictor:
             if column in categorical_columns:
                 row[column] = self.label_encoders[column].transform(value)
             elif column in numeric_columns:
-                row[column] = self.scalers[column].transform([value])[0, 0]
+                value_df = pd.DataFrame({column: value})
+                row[column] = self.scalers[column].transform(value_df)[0, 0]
         return row
 
     def __impute_row(self, row):
