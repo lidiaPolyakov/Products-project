@@ -9,6 +9,7 @@ from DS2.DS2XGBoostPredictor import DS2XGBoostPredictor
 
 from DS4.DS4PreProcessor import DS4PreProcessor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
+from DS4.DS4SVMPredictor import DS4SVMPredictor
 
 
 def ds4(common_columns, query_ds4):
@@ -28,6 +29,15 @@ def ds4(common_columns, query_ds4):
     print("Predicting hospital_death using Naive Bayes on dataset4")
     predictor = DS4NaiveBayesPredictor(df4)
     path = './Alpha/models/DS4NaiveBayesPredictor.pkl'
+    if not os.path.exists(path):
+        predictor.train_model(path)
+
+    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    print(f"Prediction: {prediction}")
+    
+    print("Predicting hospital_death using SVM on dataset4")
+    predictor = DS4SVMPredictor(df4)
+    path = './Alpha/models/DS4SVMPredictor.pkl'
     if not os.path.exists(path):
         predictor.train_model(path)
 
