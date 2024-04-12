@@ -104,5 +104,9 @@ class KNNDataProcessor:
         # get the row of original values for the nearest neighbor
         row = df_copy.iloc[nearest_neighbor_index].copy()
 
+        # replace the nearest neighbor values with the available user input values
+        for key in user_input_processed.keys():
+            row[key] = user_input_processed[key]
+
         # inverse transform the row to get the original values
         return self.inverse_transform_row(row)
