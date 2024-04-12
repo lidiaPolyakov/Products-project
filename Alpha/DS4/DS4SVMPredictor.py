@@ -110,4 +110,13 @@ class DS4SVMPredictor:
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
-        return model.predict(row_preprocessed)
+        
+        probabilities = model.predict_proba(row_preprocessed)[0]
+        classes = model.classes_
+        result = []
+        for cls, prob in zip(classes, probabilities):
+            result.append({
+                'class': int(cls),
+                'probability': float(prob)
+            })
+        return result

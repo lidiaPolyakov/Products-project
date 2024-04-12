@@ -11,6 +11,9 @@ from DS4.DS4PreProcessor import DS4PreProcessor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 from DS4.DS4SVMPredictor import DS4SVMPredictor
 
+from PredictionEvaluator import PredictionEvaluator
+
+evaluator = PredictionEvaluator()
 
 def ds4(common_columns, query_ds4):
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
@@ -34,6 +37,7 @@ def ds4(common_columns, query_ds4):
 
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
+    evaluator.add_prediction(prediction, weight=0.2)
     
     print("Predicting hospital_death using SVM on dataset4")
     predictor = DS4SVMPredictor(df4)
@@ -43,6 +47,7 @@ def ds4(common_columns, query_ds4):
 
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
+    evaluator.add_prediction(prediction, weight=0.5)
 
 def ds2(common_columns, query_ds2):
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
@@ -63,6 +68,7 @@ def ds2(common_columns, query_ds2):
     ds2_xgb_predictor.train_model()
     ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2)
     print(f"Prediction: {ds2_xgb_prediction}")
+    evaluator.add_prediction(ds2_xgb_prediction, weight=0.3)
 
 def main():
     with open('./Alpha/common_columns.json') as f:
@@ -74,6 +80,8 @@ def main():
     ds2(common_columns, query_ds2)
     
     ds4(common_columns, query_ds4)
+    
+    print(evaluator)
 
 if __name__ == '__main__':
     main()
