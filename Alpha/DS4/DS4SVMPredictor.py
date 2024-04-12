@@ -103,7 +103,10 @@ class DS4SVMPredictor:
         return row
 
     def predict(self, row, model_path=None):
-        model = joblib.load(model_path)
+        if model_path is not None:
+            model = joblib.load(model_path)
+        else:
+            model = self.model
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
