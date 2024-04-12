@@ -55,7 +55,7 @@ class DS4SVMPredictor:
         # Displaying the shapes of the train and test sets
         X_train.shape, X_test.shape, y_train.shape, y_test.shape
 
-        svm_model = SVC() #  Initializes a support vector classifier.
+        svm_model = SVC(probability=True) #  Initializes a support vector classifier.
         svm_model.fit(X_train, y_train) #  Learns the parameters of the SVM model to best separate the data into different classes.
 
         # Uses the trained SVM model to make predictions on the test data
