@@ -6,6 +6,7 @@ from KNNDataProcessor import KNNDataProcessor
 
 from DS2.DS2PreProcessor import DS2PreProcessor
 from DS2.DS2XGBoostPredictor import DS2XGBoostPredictor
+from DS2.DS2SVMPredictor import DS2SVMPredictor
 
 from DS4.DS4PreProcessor import DS4PreProcessor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
@@ -63,6 +64,13 @@ def ds2(common_columns, query_ds2):
     ds2_xgb_predictor.train_model()
     ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2)
     print(f"Prediction: {ds2_xgb_prediction}")
+
+    print("Predicting VITAL_STATUS using SVM on dataset2")
+    ds2_SVM_predictor = DS2SVMPredictor(df2)
+    ds2_SVM_predictor.train_model()
+    ds2_SVM_prediction = ds2_SVM_predictor.predict(nearest_neighbor_row_ds2)
+    print(f"Prediction: {ds2_SVM_prediction}")
+    
 
 def main():
     with open('./Alpha/common_columns.json') as f:
