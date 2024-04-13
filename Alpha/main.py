@@ -65,8 +65,12 @@ def ds2(common_columns, query_ds2):
     
     print("Predicting VITAL_STATUS using XGBoost on dataset2")
     ds2_xgb_predictor = DS2XGBoostPredictor(df2)
-    ds2_xgb_predictor.train_model()
-    ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2)
+    
+    path = './Alpha/models/DS2XGBoostPredictor.pkl'
+    if not os.path.exists(path):
+        ds2_xgb_predictor.train_model(path)
+    
+    ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2, path)
     print(f"Prediction: {ds2_xgb_prediction}")
     evaluator.add_prediction(ds2_xgb_prediction, weight=0.3)
 
