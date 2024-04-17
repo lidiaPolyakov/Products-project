@@ -57,15 +57,15 @@ class Predictor(ABC):
 
         self.model, X_test, y_test = self.build_model(X, y)
 
-        y_pred = self.model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f'Accuracy: {accuracy}')
-        print(classification_report(y_test, y_pred))
-
         if model_path is not None:
             if '/' in model_path:
                 os.makedirs(model_path[:model_path.rfind('/')], exist_ok=True)
             joblib.dump(self.model, model_path)
+
+        y_pred = self.model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f'Accuracy: {accuracy}')
+        print(classification_report(y_test, y_pred)) 
 
     @abstractmethod
     def build_model(self, X, y):
