@@ -35,6 +35,7 @@ def ds4(common_columns, query_ds4):
     
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
+    print(f"Evaluation: {predictor.evaluate_model(path)}")
 
     print("Predicting hospital_death using Naive Bayes on dataset4")
     predictor = DS4NaiveBayesPredictor(df4)
@@ -44,6 +45,7 @@ def ds4(common_columns, query_ds4):
 
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
+    print(f"Evaluation: {predictor.evaluate_model(path)}")
     
     print("Predicting hospital_death using SVM on dataset4")
     predictor = DS4SVMPredictor(df4)
@@ -53,6 +55,7 @@ def ds4(common_columns, query_ds4):
 
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
+    print(f"Evaluation: {predictor.evaluate_model(path)}")
 
 def ds2(common_columns, query_ds2):
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
@@ -77,6 +80,7 @@ def ds2(common_columns, query_ds2):
     
     ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2, path)
     print(f"Prediction: {ds2_xgb_prediction}")
+    print(f"Evaluation: {ds2_xgb_prediction.evaluate_model(path)}")
 
     print("Predicting VITAL_STATUS using SVM on dataset2")
     ds2_SVM_predictor = DS2SVMPredictor(df2)
@@ -85,6 +89,7 @@ def ds2(common_columns, query_ds2):
         ds2_SVM_predictor.train_model(path)
     ds2_SVM_prediction = ds2_SVM_predictor.predict(nearest_neighbor_row_ds2, path)
     print(f"Prediction: {ds2_SVM_prediction}")
+    print(f"Evaluation: {ds2_SVM_prediction.evaluate_model(path)}")
     
 
 def main():

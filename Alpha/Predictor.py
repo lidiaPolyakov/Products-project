@@ -26,11 +26,15 @@ class Predictor(ABC):
         self.model = self.build_model(self.X_train, self.y_train)
         self.save_model(model_path)
 
-        if X_test is None or y_test is None: return
-        y_pred = self.model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f'Accuracy: {accuracy}')
-        print(classification_report(y_test, y_pred))
+    def evaluate_model(self, model_path=None):
+        if model_path is not None:
+            self.model = self.load_model(model_path)
+        y_pred = self.model.predict(self.X_test)
+        y_pred = (y_pred > 0.5).astype(int)
+        return {
+            'accuracy': accuracy_score(self.y_test, y_pred),
+            'classification_report': classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
+        }
 
     def predict(self, row, model_path=None):
         """
