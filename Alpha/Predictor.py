@@ -35,10 +35,7 @@ class Predictor(ABC):
             self.model = self.load_model(self.path)
         y_pred = self.model.predict(self.X_test)
         y_pred = (y_pred > 0.5).astype(int)
-        return {
-            'accuracy': accuracy_score(self.y_test, y_pred),
-            'classification_report': classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
-        }
+        return classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
 
     def predict(self, row):
         """
