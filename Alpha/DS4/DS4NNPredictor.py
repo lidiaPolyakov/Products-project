@@ -9,8 +9,8 @@ from tensorflow.keras.models import load_model
 from Predictor import Predictor
 
 class DS4NNPredictor(Predictor):
-    def __init__(self, df4, target_column='hospital_death'):
-        super().__init__(df4, target_column, test_size=0.2)
+    def __init__(self, df4, path, target_column='hospital_death'):
+        super().__init__(df4, path, target_column, test_size=0.2)
 
     def build_model(self, X_train, y_train):
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0., random_state=42)

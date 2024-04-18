@@ -6,8 +6,8 @@ from sklearn.svm import SVC
 from Predictor import Predictor
 
 class DS2SVMPredictor(Predictor):
-    def __init__(self, df2, target_column='VITAL_STATUS'):
-        super().__init__(df2, target_column, test_size=0.2)
+    def __init__(self, df2, path, target_column='VITAL_STATUS'):
+        super().__init__(df2, path, target_column, test_size=0.2)
 
     def build_model(self, X_train, y_train):
         svm_model = SVC(probability=True)

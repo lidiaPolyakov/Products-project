@@ -6,8 +6,9 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 
 class Predictor(ABC):
-    def __init__(self, dataframe, target_column, test_size):
+    def __init__(self, dataframe, path, target_column, test_size):
         self.df = dataframe.copy()
+        self.path = path
         self.target_column = target_column
         self.model = None
         self.label_encoders = {}
@@ -19,16 +20,19 @@ class Predictor(ABC):
         
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
-    def train_model(self, model_path=None):
+    def train_model(self):
+        if self.load_model(self.path) is not None:
+            return
+
         if self.target_column not in self.preprocessed_data.columns:
             raise ValueError(f"Target column '{self.target_column}' not found in data.")
 
         self.model = self.build_model(self.X_train, self.y_train)
-        self.save_model(model_path)
+        self.save_model(self.path)
 
-    def evaluate_model(self, model_path=None):
-        if model_path is not None:
-            self.model = self.load_model(model_path)
+    def evaluate_model(self):
+        if self.path is not None:
+            self.model = self.load_model(self.path)
         y_pred = self.model.predict(self.X_test)
         y_pred = (y_pred > 0.5).astype(int)
         return {
@@ -36,11 +40,14 @@ class Predictor(ABC):
             'classification_report': classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
         }
 
-    def predict(self, row, model_path=None):
+    def predict(self, row):
         """
         Load the model if a path is provided, preprocess the row, and predict using the model.
         """
-        model = self.load_model(model_path)
+        if self.path is not None:
+            model = self.load_model(self.path)
+        else:
+            model = self.model
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included

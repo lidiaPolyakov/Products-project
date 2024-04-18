@@ -28,34 +28,28 @@ def ds4(common_columns, query_ds4):
     print()
     
     print("Predicting hospital_death using Neural Network on dataset4")
-    predictor = DS4NNPredictor(df4)
     path = './Alpha/models/DS4NNPredictor.keras'
-    if not os.path.exists(path):
-        predictor.train_model(path)
-    
-    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    predictor = DS4NNPredictor(df4, path)
+    predictor.train_model()
+    prediction = predictor.predict(nearest_neighbor_row_ds4)
     print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model(path)}")
+    print(f"Evaluation: {predictor.evaluate_model()}")
 
     print("Predicting hospital_death using Naive Bayes on dataset4")
-    predictor = DS4NaiveBayesPredictor(df4)
     path = './Alpha/models/DS4NaiveBayesPredictor.pkl'
-    if not os.path.exists(path):
-        predictor.train_model(path)
-
-    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    predictor = DS4NaiveBayesPredictor(df4, path)
+    predictor.train_model()
+    prediction = predictor.predict(nearest_neighbor_row_ds4)
     print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model(path)}")
-    
+    print(f"Evaluation: {predictor.evaluate_model()}")
+
     print("Predicting hospital_death using SVM on dataset4")
-    predictor = DS4SVMPredictor(df4)
     path = './Alpha/models/DS4SVMPredictor.pkl'
-    if not os.path.exists(path):
-        predictor.train_model(path)
-
-    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    predictor = DS4SVMPredictor(df4, path)
+    predictor.train_model()
+    prediction = predictor.predict(nearest_neighbor_row_ds4)
     print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model(path)}")
+    print(f"Evaluation: {predictor.evaluate_model()}")
 
 def ds2(common_columns, query_ds2):
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
@@ -72,24 +66,20 @@ def ds2(common_columns, query_ds2):
     print()
     
     print("Predicting VITAL_STATUS using XGBoost on dataset2")
-    ds2_xgb_predictor = DS2XGBoostPredictor(df2)
-    
     path = './Alpha/models/DS2XGBoostPredictor.pkl'
-    if not os.path.exists(path):
-        ds2_xgb_predictor.train_model(path)
-    
-    ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2, path)
-    print(f"Prediction: {ds2_xgb_prediction}")
-    print(f"Evaluation: {ds2_xgb_prediction.evaluate_model(path)}")
+    predictor = DS2XGBoostPredictor(df2, path)
+    predictor.train_model()
+    prediction = predictor.predict(nearest_neighbor_row_ds2)
+    print(f"Prediction: {prediction}")
+    print(f"Evaluation: {predictor.evaluate_model()}")
 
     print("Predicting VITAL_STATUS using SVM on dataset2")
-    ds2_SVM_predictor = DS2SVMPredictor(df2)
     path = './Alpha/models/DS2SVMPredictor.pkl'
-    if not os.path.exists(path):
-        ds2_SVM_predictor.train_model(path)
-    ds2_SVM_prediction = ds2_SVM_predictor.predict(nearest_neighbor_row_ds2, path)
-    print(f"Prediction: {ds2_SVM_prediction}")
-    print(f"Evaluation: {ds2_SVM_prediction.evaluate_model(path)}")
+    predictor = DS2SVMPredictor(df2, path)
+    predictor.train_model()
+    prediction = predictor.predict(nearest_neighbor_row_ds2)
+    print(f"Prediction: {prediction}")
+    print(f"Evaluation: {predictor.evaluate_model()}")
     
 
 def main():
