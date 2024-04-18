@@ -3,47 +3,37 @@ class PredictionEvaluator:
         """
         Initialize the PredictionEvaluator with a dictionary to track class weights.
         """
-        self.class_weights = []  # Stores cumulative weights for each class
+        self.total_weights = {0: 0, 1: 0}  # Tracks total weights for each class (0 and 1)
 
-    def add_prediction(self, prediction, weight=1):
+    def add_prediction(self, prediction, evaluation):
         """
-        Add a prediction to the class weights dictionary.
-        :param prediction: List of dictionaries containing class and probability.
-        :param weight: Weight to assign to the prediction.
+        Add a prediction to the evaluator.
+        :param prediction: The predicted class (assumed to be the most likely class).
+        :param evaluation: The evaluation result including accuracy.
         """
-        # example prediction, could be more classes
-        # [{'class': 0, 'probability': 0.9172860124950649}, {'class': 1, 'probability': 0.08271398750493499}]
+        # Extract the model's accuracy as the weight
+        weight = evaluation['accuracy']
+
+        # Update the total weight for the predicted class
+        self.total_weights[prediction] += weight
+
+    def evaluate_risk_assessment(self):
+        """
+        Evaluate the risk assessment based on the evaluation results.
+        Class 0: Not risky
+        Class 1: Risky
+        return: classes of risk assessment (low, medium, high)
+        """
+        total_0 = self.total_weights[0]
+        total_1 = self.total_weights[1]
         
-        # for each class in the prediction, add a property weighted_prob
-        model = []
-        for pred in prediction:
-            cls = pred['class']
-            prob = pred['probability']
-            weighted_prob = prob * weight
-            model.append({'class': cls, 'probability': prob, 'weighted_prob': weighted_prob})
-        self.class_weights.append(model)
-
-    def get_best_class(self):
-        """
-        Determine the class with the highest cumulative weighted probability.
-        :return: Tuple containing the class index and its weighted sum.
-        """
-        if not self.class_weights:
-            return None, None  # No data has been added
-
-        # for each class, sum the weighted probabilities
-        class_sums = {}
-        for model in self.class_weights:
-            for pred in model:
-                cls = pred['class']
-                weighted_prob = pred['weighted_prob']
-                class_sums[cls] = class_sums.get(cls, 0) + weighted_prob
-        
-        # find the class with the highest sum
-        best_class = max(class_sums, key=class_sums.get)
-        max_weight = class_sums[best_class]
-        return best_class, max_weight
-
-    def __str__(self):
-        best_class, max_weight = self.get_best_class()
-        return f"Class {best_class} has the highest cumulative weighted probability of {max_weight:.4f}"
+        if total_1 > total_0:
+            if total_1 / (total_0 + total_1) > 0.5:  # More than 50% of the weight is towards class 1
+                return "high"
+            else:
+                return "medium"
+        else:
+            if total_0 / (total_0 + total_1) > 0.5:  # More than 50% of the weight is towards class 0
+                return "low"
+            else:
+                return "medium"

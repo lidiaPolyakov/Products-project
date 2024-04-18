@@ -13,12 +13,16 @@ from DS4.DS4NNPredictor import DS4NNPredictor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 from DS4.DS4SVMPredictor import DS4SVMPredictor
 
+from PredictionEvaluator import PredictionEvaluator
+
+evaluator = PredictionEvaluator()
+
 def run_predictor(target_column, predictor, ds_name, nearest_neighbor_row):
     print(f"Predicting {target_column} using {predictor.__class__.__name__} on {ds_name}")
     predictor.train_model()
     prediction = predictor.predict(nearest_neighbor_row)
-    print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model()}")
+    evaluation = predictor.evaluate_model()
+    evaluator.add_prediction(prediction, evaluation)
 
 def ds4(common_columns, query_ds4):
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
@@ -29,10 +33,6 @@ def ds4(common_columns, query_ds4):
     knn_data_processor_ds4 = KNNDataProcessor(common_columns, df4)
     user_input_processed_df4 = knn_data_processor_ds4.prepare_user_input_for_knn(query_ds4, "ds4")
     nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor(user_input_processed_df4)
-    print(f"Query for dataset4: {query_ds4}")
-    print("Nearest neighbor in dataset4:")
-    print(nearest_neighbor_row_ds4)
-    print()
 
     predictors = [
         DS4NNPredictor(df4, './Alpha/models/DS4NNPredictor.keras'),
@@ -51,10 +51,6 @@ def ds2(common_columns, query_ds2):
     knn_data_processor_ds2 = KNNDataProcessor(common_columns, df2)
     user_input_processed_df2 = knn_data_processor_ds2.prepare_user_input_for_knn(query_ds2, "ds2")
     nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor(user_input_processed_df2)
-    print(f"Query for dataset2: {query_ds2}")
-    print("Nearest neighbor in dataset2:")
-    print(nearest_neighbor_row_ds2)
-    print()
 
     predictors = [
         DS2XGBoostPredictor(df2, './Alpha/models/DS2XGBoostPredictor.pkl'),
@@ -74,6 +70,10 @@ def main():
     ds2(common_columns, query_ds2)
     
     ds4(common_columns, query_ds4)
+    
+    risk_assessment = evaluator.evaluate_risk_assessment()
+    
+    print(f"Risk assessment: {risk_assessment}")
 
 if __name__ == '__main__':
     main()

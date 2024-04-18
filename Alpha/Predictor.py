@@ -48,7 +48,7 @@ class Predictor(ABC):
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
-        return model.predict(row_preprocessed)
+        return model.predict(row_preprocessed).reshape(1)[0]
 
     @abstractmethod
     def build_model(self, X_train, y_train):
