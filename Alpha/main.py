@@ -13,10 +13,6 @@ from DS4.DS4NNPredictor import DS4NNPredictor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 from DS4.DS4SVMPredictor import DS4SVMPredictor
 
-from PredictionEvaluator import PredictionEvaluator
-
-evaluator = PredictionEvaluator()
-
 def ds4(common_columns, query_ds4):
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
     ds4_preprocessor = DS4PreProcessor(df4)
@@ -39,8 +35,6 @@ def ds4(common_columns, query_ds4):
     
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
-    evaluator.add_prediction(prediction, weight=0.25)
-
 
     print("Predicting hospital_death using Naive Bayes on dataset4")
     predictor = DS4NaiveBayesPredictor(df4)
@@ -50,7 +44,6 @@ def ds4(common_columns, query_ds4):
 
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
-    evaluator.add_prediction(prediction, weight=0.25)
     
     print("Predicting hospital_death using SVM on dataset4")
     predictor = DS4SVMPredictor(df4)
@@ -60,7 +53,6 @@ def ds4(common_columns, query_ds4):
 
     prediction = predictor.predict(nearest_neighbor_row_ds4, path)
     print(f"Prediction: {prediction}")
-    evaluator.add_prediction(prediction, weight=0.25)
 
 def ds2(common_columns, query_ds2):
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
@@ -85,16 +77,14 @@ def ds2(common_columns, query_ds2):
     
     ds2_xgb_prediction = ds2_xgb_predictor.predict(nearest_neighbor_row_ds2, path)
     print(f"Prediction: {ds2_xgb_prediction}")
-    evaluator.add_prediction(ds2_xgb_prediction, weight=0.25)
 
     print("Predicting VITAL_STATUS using SVM on dataset2")
     ds2_SVM_predictor = DS2SVMPredictor(df2)
-    path = './Alpha/models/DS2XGBoostPredictor.pkl'
+    path = './Alpha/models/DS2SVMPredictor.pkl'
     if not os.path.exists(path):
         ds2_SVM_predictor.train_model(path)
     ds2_SVM_prediction = ds2_SVM_predictor.predict(nearest_neighbor_row_ds2, path)
     print(f"Prediction: {ds2_SVM_prediction}")
-    evaluator.add_prediction(ds2_xgb_prediction, weight=0.25)
     
 
 def main():
@@ -107,8 +97,6 @@ def main():
     ds2(common_columns, query_ds2)
     
     ds4(common_columns, query_ds4)
-    
-    print(evaluator)
 
 if __name__ == '__main__':
     main()
