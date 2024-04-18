@@ -44,7 +44,7 @@ class KNNDataProcessor:
             if dataset_column_name is None:
                 continue
             if dataset_column_name not in user_input:
-                raise ValueError(f"Missing input for column: {dataset_column_name}")
+                continue
 
             input_val = user_input[dataset_column_name]
             if col_info["datatype"] == "category":
@@ -92,13 +92,16 @@ class KNNDataProcessor:
                 continue
             relevant_columns.append(dataset_column_name)
         df_copy = self.df_copy.dropna(subset=relevant_columns)
-        df_processed_relevant = df_copy[relevant_columns]
+        
+        intersection_columns = [col for col in relevant_columns if col in user_input_processed]
+        
+        df_processed_relevant = df_copy[intersection_columns]
 
-        metric = lambda u, v: self.nearest_neighbor_metric(u, v, self.label_encoders, self.scalers, relevant_columns)
+        metric = lambda u, v: self.nearest_neighbor_metric(u, v, self.label_encoders, self.scalers, intersection_columns)
         knn = NearestNeighbors(n_neighbors=1, metric=metric)
         knn.fit(df_processed_relevant)
 
-        knn_input_df = pd.DataFrame([user_input_processed.values()], columns=relevant_columns)
+        knn_input_df = pd.DataFrame([user_input_processed], columns=intersection_columns)
         nearest_neighbor_index = knn.kneighbors(knn_input_df, return_distance=False)[0][0]
 
         # get the row of original values for the nearest neighbor

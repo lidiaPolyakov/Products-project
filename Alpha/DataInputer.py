@@ -26,38 +26,6 @@ class DataInputer:
         except ValueError:
             return False
 
-    def get_valid_input(self):
-        user_inputs = {}
-        for column in self.common_columns:
-            datatype = column["datatype"]
-            column_name = column["standard_column_name"]
-            valid_input = False
-            
-            while not valid_input:
-                if datatype == "category":
-                    print("Options:")
-                    allowed_categories = column["standard_input_values"]["categories"]
-                    for category in allowed_categories:
-                        print(f"- {category}")
-
-                user_input = input(f"Enter {column_name}: ")
-
-                if datatype == "category":
-                    allowed_categories = column["standard_input_values"]["categories"]
-                    valid_input = self.validate_category_input(user_input, allowed_categories)
-                elif datatype == "int":
-                    allowed_range = column["standard_input_values"]["range"]
-                    valid_input = self.validate_int_input(user_input, allowed_range)
-                elif datatype == "float":
-                    allowed_range = column["standard_input_values"]["range"]
-                    valid_input = self.validate_float_input(user_input, allowed_range)
-
-                if not valid_input:
-                    print(f"Invalid input for {column_name}. Please try again.")
-            user_inputs[column_name] = user_input
-
-        return user_inputs
-
     def get_mock_data(self):
         mock_inputs = {}
         for column in self.common_columns:
@@ -74,18 +42,55 @@ class DataInputer:
 
         return mock_inputs
 
+    def get_valid_input(self, data_input):
+        user_inputs = {}
+        errors = {}
+
+        for column in self.common_columns:
+            datatype = column["datatype"]
+            column_name = column["standard_column_name"]
+            
+            if column_name == 'vital status':
+                continue
+            if column_name not in data_input:
+                errors[column_name] = "This field is required."
+                continue
+
+            user_input = data_input[column_name]
+
+            if datatype == "category":
+                allowed_categories = column["standard_input_values"]["categories"]
+                if not self.validate_category_input(user_input, allowed_categories):
+                    errors[column_name] = f"Invalid category. Allowed options: {', '.join(allowed_categories)}"
+            elif datatype == "int":
+                allowed_range = column["standard_input_values"]["range"]
+                if not self.validate_int_input(user_input, allowed_range):
+                    errors[column_name] = f"Input must be an integer within the range {allowed_range}."
+            elif datatype == "float":
+                allowed_range = column["standard_input_values"]["range"]
+                if not self.validate_float_input(user_input, allowed_range):
+                    errors[column_name] = f"Input must be a float within the range {allowed_range}."
+
+            if column_name not in errors:
+                user_inputs[column_name] = user_input    
+        if errors:
+            raise ValueError("Input validation errors", errors)    
+
+        return user_inputs
+
     def prepare_queries(self, input_columns):
         query_for_ds2 = {}
         query_for_ds4 = {}
-        for input_column, common_column in zip(input_columns, self.common_columns):
-            if input_column != common_column["standard_column_name"]: continue
+        for common_column in self.common_columns:
+            standard_column_name = common_column["standard_column_name"]
             
-            df2_column_name = common_column["column"]["name"]["ds2"]
-            if df2_column_name is not None:
-                query_for_ds2[df2_column_name] = input_columns[input_column]
-            
-            df4_column_name = common_column["column"]["name"]["ds4"]
-            if df4_column_name is not None:
-                query_for_ds4[df4_column_name] = input_columns[input_column]
+            if standard_column_name in input_columns:
+                df2_column_name = common_column["column"]["name"]["ds2"]
+                if df2_column_name is not None:
+                    query_for_ds2[df2_column_name] = input_columns[standard_column_name]
+                
+                df4_column_name = common_column["column"]["name"]["ds4"]
+                if df4_column_name is not None:
+                    query_for_ds4[df4_column_name] = input_columns[standard_column_name]
 
         return query_for_ds2, query_for_ds4

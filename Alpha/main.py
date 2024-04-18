@@ -60,12 +60,12 @@ def ds2(common_columns, query_ds2):
         run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2)
 
 
-def main():
+def calculate_risk(medical_data):
     with open('./Alpha/common_columns.json') as f:
         common_columns = json.load(f)
     data_processor = DataInputer(common_columns)
-    mock_data = data_processor.get_mock_data()
-    query_ds2, query_ds4 = data_processor.prepare_queries(mock_data)
+    validated_data = data_processor.get_valid_input(medical_data)
+    query_ds2, query_ds4 = data_processor.prepare_queries(validated_data)
     
     ds2(common_columns, query_ds2)
     
@@ -74,6 +74,15 @@ def main():
     risk_assessment = evaluator.evaluate_risk_assessment()
     
     print(f"Risk assessment: {risk_assessment}")
+    return risk_assessment
 
 if __name__ == '__main__':
-    main()
+    medical_data = {
+        'gender': 'Male',
+        'race': 'Caucasian',
+        'smoking history': 'Smoked in the past',
+        'height_cm': '153',
+        'weight_kg': '35',
+        'age': 30
+    }
+    calculate_risk(medical_data)
