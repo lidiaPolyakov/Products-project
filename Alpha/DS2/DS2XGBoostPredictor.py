@@ -1,3 +1,6 @@
+import os
+import joblib
+
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
 
@@ -26,5 +29,13 @@ class DS2XGBoostPredictor(Predictor):
 
         return model, X_test, y_test
 
-    def predict(self, row, model_path=None):
-        return super().predict(row, model_path)
+    def save_model(self, model_path):
+        if model_path is None: return
+        if '/' in model_path:
+            os.makedirs(model_path[:model_path.rfind('/')], exist_ok=True)
+        joblib.dump(self.model, model_path) 
+
+    def load_model(self, model_path):
+        if model_path is not None:
+            return joblib.load(model_path)
+        return self.model

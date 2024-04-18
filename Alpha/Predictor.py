@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-import joblib
-import os
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import accuracy_score, classification_report
@@ -57,11 +55,9 @@ class Predictor(ABC):
 
         self.model, X_test, y_test = self.build_model(X, y)
 
-        if model_path is not None:
-            if '/' in model_path:
-                os.makedirs(model_path[:model_path.rfind('/')], exist_ok=True)
-            joblib.dump(self.model, model_path)
+        self.save_model(model_path)
 
+        if X_test is None or y_test is None: return
         y_pred = self.model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
         print(f'Accuracy: {accuracy}')
@@ -74,6 +70,23 @@ class Predictor(ABC):
         :param X: features columns
         :param y: target column
         :return: model, X_test, y_test
+        """
+        pass
+
+    @abstractmethod
+    def save_model(self, model_path):
+        """
+        Abstract method for saving the model to a file.
+        :param model_path: path to save the model
+        """
+        pass
+    
+    @abstractmethod
+    def load_model(self, model_path):
+        """
+        Abstract method for loading the model from a file.
+        :param model_path: path to load the model
+        :return: model
         """
         pass
 
@@ -113,10 +126,7 @@ class Predictor(ABC):
         """
         Load the model if a path is provided, preprocess the row, and predict using the model.
         """
-        if model_path is not None:
-            model = joblib.load(model_path)
-        else:
-            model = self.model
+        model = self.load_model(model_path)
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
