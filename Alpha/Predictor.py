@@ -3,25 +3,27 @@ import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
 
 class Predictor(ABC):
-    def __init__(self, dataframe, target_column):
+    def __init__(self, dataframe, target_column, test_size):
         self.df = dataframe.copy()
         self.target_column = target_column
         self.model = None
         self.label_encoders = {}
         self.scalers = {}
         self.preprocessed_data = self.__preprocess_data()
+        
+        X = self.preprocessed_data.drop(self.target_column, axis=1)
+        y = self.preprocessed_data[self.target_column]
+        
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
     def train_model(self, model_path=None):
         if self.target_column not in self.preprocessed_data.columns:
             raise ValueError(f"Target column '{self.target_column}' not found in data.")
 
-        X = self.preprocessed_data.drop(self.target_column, axis=1)
-        y = self.preprocessed_data[self.target_column]
-
-        self.model, X_test, y_test = self.build_model(X, y)
-
+        self.model = self.build_model(self.X_train, self.y_train)
         self.save_model(model_path)
 
         if X_test is None or y_test is None: return
@@ -38,24 +40,15 @@ class Predictor(ABC):
         row_preprocessed = self.__impute_row(row.to_frame().transpose())
         row_preprocessed = self.__preprocess_row(row_preprocessed)
         row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
-
-        probabilities = model.predict_proba(row_preprocessed)[0]
-        classes = model.classes_
-        result = []
-        for cls, prob in zip(classes, probabilities):
-            result.append({
-                'class': int(cls),
-                'probability': float(prob)
-            })
-        return result
+        return model.predict(row_preprocessed)
 
     @abstractmethod
-    def build_model(self, X, y):
+    def build_model(self, X_train, y_train):
         """
         Abstract method for building the model, specific to each derived class.
-        :param X: features columns
-        :param y: target column
-        :return: model, X_test, y_test
+        :param X: feature columns for training
+        :param y: target column for training
+        :return: model
         """
         pass
 
