@@ -11,9 +11,72 @@ class Predictor(ABC):
         self.model = None
         self.label_encoders = {}
         self.scalers = {}
-        self.preprocessed_data = self.preprocess_data()
+        self.preprocessed_data = self.__preprocess_data()
+
+    def train_model(self, model_path=None):
+        if self.target_column not in self.preprocessed_data.columns:
+            raise ValueError(f"Target column '{self.target_column}' not found in data.")
+
+        X = self.preprocessed_data.drop(self.target_column, axis=1)
+        y = self.preprocessed_data[self.target_column]
+
+        self.model, X_test, y_test = self.build_model(X, y)
+
+        self.save_model(model_path)
+
+        if X_test is None or y_test is None: return
+        y_pred = self.model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f'Accuracy: {accuracy}')
+        print(classification_report(y_test, y_pred))
+
+    def predict(self, row, model_path=None):
+        """
+        Load the model if a path is provided, preprocess the row, and predict using the model.
+        """
+        model = self.load_model(model_path)
+        row_preprocessed = self.__impute_row(row.to_frame().transpose())
+        row_preprocessed = self.__preprocess_row(row_preprocessed)
+        row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
+
+        probabilities = model.predict_proba(row_preprocessed)[0]
+        classes = model.classes_
+        result = []
+        for cls, prob in zip(classes, probabilities):
+            result.append({
+                'class': int(cls),
+                'probability': float(prob)
+            })
+        return result
+
+    @abstractmethod
+    def build_model(self, X, y):
+        """
+        Abstract method for building the model, specific to each derived class.
+        :param X: features columns
+        :param y: target column
+        :return: model, X_test, y_test
+        """
+        pass
+
+    @abstractmethod
+    def save_model(self, model_path):
+        """
+        Abstract method for saving the model to a file.
+        :param model_path: path to save the model
+        """
+        pass
     
-    def preprocess_data(self):
+    @abstractmethod
+    def load_model(self, model_path):
+        """
+        Abstract method for loading the model from a file.
+        :param model_path: path to load the model
+        :return: model
+        """
+        pass
+
+    def __preprocess_data(self):
         numeric_columns = self.df.select_dtypes(include=['number']).columns
         categorical_columns = self.df.select_dtypes(exclude=['number']).columns
 
@@ -46,50 +109,6 @@ class Predictor(ABC):
         
         return preprocessed_data
 
-    def train_model(self, model_path=None):
-        if self.target_column not in self.preprocessed_data.columns:
-            raise ValueError(f"Target column '{self.target_column}' not found in data.")
-
-        X = self.preprocessed_data.drop(self.target_column, axis=1)
-        y = self.preprocessed_data[self.target_column]
-
-        self.model, X_test, y_test = self.build_model(X, y)
-
-        self.save_model(model_path)
-
-        if X_test is None or y_test is None: return
-        y_pred = self.model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f'Accuracy: {accuracy}')
-        print(classification_report(y_test, y_pred)) 
-
-    @abstractmethod
-    def build_model(self, X, y):
-        """
-        Abstract method for building the model, specific to each derived class.
-        :param X: features columns
-        :param y: target column
-        :return: model, X_test, y_test
-        """
-        pass
-
-    @abstractmethod
-    def save_model(self, model_path):
-        """
-        Abstract method for saving the model to a file.
-        :param model_path: path to save the model
-        """
-        pass
-    
-    @abstractmethod
-    def load_model(self, model_path):
-        """
-        Abstract method for loading the model from a file.
-        :param model_path: path to load the model
-        :return: model
-        """
-        pass
-
     def __preprocess_row(self, row):
         """
         Helper method to preprocess a single row, using fitted encoders and scalers.
@@ -121,22 +140,3 @@ class Predictor(ABC):
                 elif column in self.scalers:
                     row[column] = self.df[column].median()
         return row
-
-    def predict(self, row, model_path=None):
-        """
-        Load the model if a path is provided, preprocess the row, and predict using the model.
-        """
-        model = self.load_model(model_path)
-        row_preprocessed = self.__impute_row(row.to_frame().transpose())
-        row_preprocessed = self.__preprocess_row(row_preprocessed)
-        row_preprocessed = row_preprocessed.drop(self.target_column, axis=1, errors='ignore')  # Drop target if it's included
-
-        probabilities = model.predict_proba(row_preprocessed)[0]
-        classes = model.classes_
-        result = []
-        for cls, prob in zip(classes, probabilities):
-            result.append({
-                'class': int(cls),
-                'probability': float(prob)
-            })
-        return result
