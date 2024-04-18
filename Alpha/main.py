@@ -13,12 +13,19 @@ from DS4.DS4NNPredictor import DS4NNPredictor
 from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
 from DS4.DS4SVMPredictor import DS4SVMPredictor
 
+def run_predictor(target_column, predictor, ds_name, nearest_neighbor_row):
+    print(f"Predicting {target_column} using {predictor.__class__.__name__} on {ds_name}")
+    predictor.train_model()
+    prediction = predictor.predict(nearest_neighbor_row)
+    print(f"Prediction: {prediction}")
+    print(f"Evaluation: {predictor.evaluate_model()}")
+
 def ds4(common_columns, query_ds4):
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
     ds4_preprocessor = DS4PreProcessor(df4)
     df4 = ds4_preprocessor.preprocessed_df4
     df4.name = 'ds4'
-    
+
     knn_data_processor_ds4 = KNNDataProcessor(common_columns, df4)
     user_input_processed_df4 = knn_data_processor_ds4.prepare_user_input_for_knn(query_ds4, "ds4")
     nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor(user_input_processed_df4)
@@ -26,30 +33,14 @@ def ds4(common_columns, query_ds4):
     print("Nearest neighbor in dataset4:")
     print(nearest_neighbor_row_ds4)
     print()
-    
-    print("Predicting hospital_death using Neural Network on dataset4")
-    path = './Alpha/models/DS4NNPredictor.keras'
-    predictor = DS4NNPredictor(df4, path)
-    predictor.train_model()
-    prediction = predictor.predict(nearest_neighbor_row_ds4)
-    print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model()}")
 
-    print("Predicting hospital_death using Naive Bayes on dataset4")
-    path = './Alpha/models/DS4NaiveBayesPredictor.pkl'
-    predictor = DS4NaiveBayesPredictor(df4, path)
-    predictor.train_model()
-    prediction = predictor.predict(nearest_neighbor_row_ds4)
-    print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model()}")
-
-    print("Predicting hospital_death using SVM on dataset4")
-    path = './Alpha/models/DS4SVMPredictor.pkl'
-    predictor = DS4SVMPredictor(df4, path)
-    predictor.train_model()
-    prediction = predictor.predict(nearest_neighbor_row_ds4)
-    print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model()}")
+    predictors = [
+        DS4NNPredictor(df4, './Alpha/models/DS4NNPredictor.keras'),
+        DS4NaiveBayesPredictor(df4, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
+        DS4SVMPredictor(df4, './Alpha/models/DS4SVMPredictor.pkl')
+    ]
+    for predictor in predictors:
+        run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4)
 
 def ds2(common_columns, query_ds2):
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
@@ -64,23 +55,14 @@ def ds2(common_columns, query_ds2):
     print("Nearest neighbor in dataset2:")
     print(nearest_neighbor_row_ds2)
     print()
-    
-    print("Predicting VITAL_STATUS using XGBoost on dataset2")
-    path = './Alpha/models/DS2XGBoostPredictor.pkl'
-    predictor = DS2XGBoostPredictor(df2, path)
-    predictor.train_model()
-    prediction = predictor.predict(nearest_neighbor_row_ds2)
-    print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model()}")
 
-    print("Predicting VITAL_STATUS using SVM on dataset2")
-    path = './Alpha/models/DS2SVMPredictor.pkl'
-    predictor = DS2SVMPredictor(df2, path)
-    predictor.train_model()
-    prediction = predictor.predict(nearest_neighbor_row_ds2)
-    print(f"Prediction: {prediction}")
-    print(f"Evaluation: {predictor.evaluate_model()}")
-    
+    predictors = [
+        DS2XGBoostPredictor(df2, './Alpha/models/DS2XGBoostPredictor.pkl'),
+        DS2SVMPredictor(df2, './Alpha/models/DS2SVMPredictor.pkl')
+    ]
+    for predictor in predictors:
+        run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2)
+
 
 def main():
     with open('./Alpha/common_columns.json') as f:
