@@ -37,7 +37,7 @@ def ds4(common_columns, query_ds4):
     predictors = [
         DS4NNPredictor(df4, './Alpha/models/DS4NNPredictor.keras'),
         DS4NaiveBayesPredictor(df4, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
-        DS4SVMPredictor(df4, './Alpha/models/DS4SVMPredictor.pkl')
+        # DS4SVMPredictor(df4, './Alpha/models/DS4SVMPredictor.pkl')
     ]
     for predictor in predictors:
         run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4)
