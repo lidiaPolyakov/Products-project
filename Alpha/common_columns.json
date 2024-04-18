@@ -4,8 +4,8 @@
 		"standard_column_name": "gender",
 		"standard_input_values": {
 			"categories": [
-				"M",
-				"F"
+				"Male",
+				"Female"
 			]
 		},
 		"column": {
@@ -14,11 +14,11 @@
 				"ds4": "gender"
 			},
 			"categories": {
-				"M": {
+				"Male": {
 					"ds2": "Male",
 					"ds4": "M"
 				},
-				"F": {
+				"Female": {
 					"ds2": "Female",
 					"ds4": "F"
 				}
