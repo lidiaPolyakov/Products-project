@@ -11,7 +11,7 @@ class DS2XGBoostPredictor(Predictor):
 
     def build_model(self, X_train, y_train):
         xgb_classifier = xgb.XGBClassifier(
-            n_estimators=1,
+            n_estimators=1000,
             learning_rate=0.1,
             use_label_encoder=False,
             eval_metric='logloss',
