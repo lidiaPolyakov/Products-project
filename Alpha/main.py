@@ -27,14 +27,14 @@ def ds4(common_columns, query_ds4):
     print(nearest_neighbor_row_ds4)
     print()
     
-    # print("Predicting hospital_death using Neural Network on dataset4")
-    # predictor = DS4NNPredictor(df4)
-    # path = './Alpha/models/DS4NNPredictor.keras'
-    # if not os.path.exists(path):
-    #     predictor.train_model(path)
+    print("Predicting hospital_death using Neural Network on dataset4")
+    predictor = DS4NNPredictor(df4)
+    path = './Alpha/models/DS4NNPredictor.keras'
+    if not os.path.exists(path):
+        predictor.train_model(path)
     
-    # prediction = predictor.predict(nearest_neighbor_row_ds4, path)
-    # print(f"Prediction: {prediction}")
+    prediction = predictor.predict(nearest_neighbor_row_ds4, path)
+    print(f"Prediction: {prediction}")
 
     print("Predicting hospital_death using Naive Bayes on dataset4")
     predictor = DS4NaiveBayesPredictor(df4)
