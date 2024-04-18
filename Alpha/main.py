@@ -33,7 +33,7 @@ def ds4(common_columns, query_ds4):
     
     print("Predicting hospital_death using Neural Network on dataset4")
     predictor = DS4NNPredictor(df4)
-    path = './Alpha/models/DS4NNPredictor.pkl'
+    path = './Alpha/models/DS4NNPredictor.keras'
     if not os.path.exists(path):
         predictor.train_model(path)
     
