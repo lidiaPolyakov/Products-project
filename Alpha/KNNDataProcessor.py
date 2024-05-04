@@ -8,8 +8,8 @@ class KNNDataProcessor:
         df_copy = df.copy()
         df_copy.name = df.name
 
-        label_encoders = {}
-        scalers = {}
+        self.label_encoders = {}
+        self.scalers = {}
 
         for col_info in self.common_columns:
             datatype = col_info["datatype"]
@@ -19,18 +19,16 @@ class KNNDataProcessor:
             if datatype == "category":
                 le = LabelEncoder()
                 df_copy[column_name] = le.fit_transform(df_copy[column_name].astype(str))
-                label_encoders[column_name] = le
+                self.label_encoders[column_name] = le
             else:
                 scaler = StandardScaler()
                 df_copy[column_name] = scaler.fit_transform(df_copy[[column_name]])
-                scalers[column_name] = {
+                self.scalers[column_name] = {
                     "scaler": scaler,
                     "max_scaled": df_copy[column_name].max(),
                     "min_scaled": df_copy[column_name].min()
                 }
         self.df_copy = df_copy
-        self.label_encoders = label_encoders
-        self.scalers = scalers
 
     def map_input_to_dataset_value(self, input_value, column_info, dataset_name):
         if column_info["datatype"] == "category":
