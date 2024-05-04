@@ -141,7 +141,7 @@
 	},
 	{
 		"datatype": "float",
-		"standard_column_name": "height_cm",
+		"standard_column_name": "height - cm",
 		"standard_input_values": {
 			"range": [
 				135,
@@ -157,7 +157,7 @@
 	},
 	{
 		"datatype": "float",
-		"standard_column_name": "weight_kg",
+		"standard_column_name": "weight - kg",
 		"standard_input_values": {
 			"range": [
 				35,
@@ -170,5 +170,69 @@
 				"ds4": "weight"
 			}
 		}
-	}
+	},
+    {
+        "datatype": "float",
+        "standard_column_name": "glucose - mmol/L",
+        "standard_input_values": {
+            "range": [
+                35,
+                600
+            ]
+        },
+        "column": {
+            "name": {
+                "ds2": null,
+                "ds4": "glucose_apache"
+            }
+        }
+    },
+    {
+        "datatype": "float",
+        "standard_column_name": "sodium_apache - mmol/L",
+        "standard_input_values": {
+            "range": [
+                110,
+                170
+            ]
+        },
+        "column": {
+            "name": {
+                "ds2": null,
+                "ds4": "sodium_apache"
+            }
+        }
+    },
+    {
+        "datatype": "int",
+        "standard_column_name": "heart rate - bpm",
+        "standard_input_values": {
+            "range": [
+                30,
+                200
+            ]
+        },
+        "column": {
+            "name": {
+                "ds2": null,
+                "ds4": "heart_rate_apache"
+            }
+        }
+    },
+    {
+        "datatype": "float",
+        "standard_column_name": "creatinine - micromol/L",
+        "standard_input_values": {
+            "range": [
+                0.1,
+                15
+            ]
+        },
+        "column": {
+            "name": {
+                "ds2": null,
+                "ds4": "creatinine_apache"
+            }
+        }
+    }
 ]
