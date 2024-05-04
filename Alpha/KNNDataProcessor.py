@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.neighbors import NearestNeighbors
@@ -10,6 +11,7 @@ class KNNDataProcessor:
 
         self.label_encoders = {}
         self.scalers = {}
+        self.min_max_scalers = np.array([])
 
         for col_info in self.common_columns:
             datatype = col_info["datatype"]
@@ -20,14 +22,12 @@ class KNNDataProcessor:
                 le = LabelEncoder()
                 df_copy[column_name] = le.fit_transform(df_copy[column_name].astype(str))
                 self.label_encoders[column_name] = le
+                self.min_max_scalers = np.append(self.min_max_scalers, np.nan)
             else:
                 scaler = StandardScaler()
                 df_copy[column_name] = scaler.fit_transform(df_copy[[column_name]])
-                self.scalers[column_name] = {
-                    "scaler": scaler,
-                    "max_scaled": df_copy[column_name].max(),
-                    "min_scaled": df_copy[column_name].min()
-                }
+                self.scalers[column_name] = scaler
+                self.min_max_scalers = np.append(self.min_max_scalers, df_copy[column_name].max() - df_copy[column_name].min())
         self.df_copy = df_copy
 
     def map_input_to_dataset_value(self, input_value, column_info, dataset_name):
@@ -50,25 +50,24 @@ class KNNDataProcessor:
                 input_val = self.label_encoders[dataset_column_name].transform([str(mapped_input_val)])[0]
             elif dataset_column_name in self.scalers:
                 input_val_df = pd.DataFrame({dataset_column_name: [input_val]})
-                input_val = self.scalers[dataset_column_name]["scaler"].transform(input_val_df)[0, 0]
+                input_val = self.scalers[dataset_column_name].transform(input_val_df)[0, 0]
 
             processed_input[dataset_column_name] = input_val
 
         return processed_input
 
-    def nearest_neighbor_metric(self, x, y, label_encoders, scalers, columns):
-        total_distance = 0
-        categorical_columns = label_encoders.keys()
-        numeric_columns = scalers.keys()
-        for i, col in enumerate(columns):
-            if col in numeric_columns:
-                # scaling by min-max
-                numerator = (x[i] - y[i])
-                denominator = (scalers[col]["max_scaled"] - scalers[col]["min_scaled"])
-                total_distance += (numerator / denominator) ** 2
-            elif (col in categorical_columns) and (x[i] != y[i]):
-                total_distance += 1
-        return total_distance ** 0.5
+    def nearest_neighbor_metric(self, x, y):
+        categorical = np.isnan(self.min_max_scalers)
+        numeric = ~categorical
+
+        # Calculate distance for categorical features
+        categorical_dist = np.sum(x[categorical] != y[categorical])
+
+        # Calculate scaled distance for numeric features
+        scaled_diff = (x[numeric] - y[numeric]) / self.min_max_scalers[numeric]
+        numeric_dist = np.sum(scaled_diff ** 2)
+
+        return np.sqrt(numeric_dist + categorical_dist)
 
     def inverse_transform_row(self, row):
         # inverse transform the row to get the original values
@@ -79,7 +78,7 @@ class KNNDataProcessor:
             if col_info["datatype"] == "category":
                 row[dataset_column_name] = self.label_encoders[dataset_column_name].inverse_transform([row[dataset_column_name]])[0]
             elif dataset_column_name in self.scalers:
-                row[dataset_column_name] = self.scalers[dataset_column_name]["scaler"].inverse_transform([[row[dataset_column_name]]])[0, 0]
+                row[dataset_column_name] = self.scalers[dataset_column_name].inverse_transform([[row[dataset_column_name]]])[0, 0]
         return row
  
     def find_nearest_neighbor(self, user_input_processed):
@@ -95,8 +94,7 @@ class KNNDataProcessor:
         
         df_processed_relevant = df_copy[intersection_columns]
 
-        metric = lambda u, v: self.nearest_neighbor_metric(u, v, self.label_encoders, self.scalers, intersection_columns)
-        knn = NearestNeighbors(n_neighbors=1, metric=metric)
+        knn = NearestNeighbors(n_neighbors=1, metric=self.nearest_neighbor_metric)
         knn.fit(df_processed_relevant)
 
         knn_input_df = pd.DataFrame([user_input_processed], columns=intersection_columns)
