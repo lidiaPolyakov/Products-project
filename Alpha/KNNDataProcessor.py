@@ -56,18 +56,14 @@ class KNNDataProcessor:
 
         return processed_input
 
-    def nearest_neighbor_metric(self, x, y):
-        categorical = np.isnan(self.min_max_scalers)
+    def nearest_neighbor_metric(self, x, y, min_max_scalers):
+        categorical = np.isnan(min_max_scalers)
         numeric = ~categorical
-
-        # Calculate distance for categorical features
-        categorical_dist = np.sum(x[categorical] != y[categorical])
-
-        # Calculate scaled distance for numeric features
-        scaled_diff = (x[numeric] - y[numeric]) / self.min_max_scalers[numeric]
-        numeric_dist = np.sum(scaled_diff ** 2)
-
-        return np.sqrt(numeric_dist + categorical_dist)
+        return np.sqrt(
+            np.sum(((x[numeric] - y[numeric]) / min_max_scalers[numeric]) ** 2)
+            +
+            np.sum(x[categorical] != y[categorical])
+        )
 
     def inverse_transform_row(self, row):
         # inverse transform the row to get the original values
