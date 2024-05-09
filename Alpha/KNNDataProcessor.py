@@ -90,7 +90,8 @@ class KNNDataProcessor:
         
         df_processed_relevant = df_copy[intersection_columns]
 
-        knn = NearestNeighbors(n_neighbors=1, metric=self.nearest_neighbor_metric)
+        metric = lambda x, y: self.nearest_neighbor_metric(x, y, self.min_max_scalers)
+        knn = NearestNeighbors(n_neighbors=1, metric=metric)
         knn.fit(df_processed_relevant)
 
         knn_input_df = pd.DataFrame([user_input_processed], columns=intersection_columns)
