@@ -2,6 +2,7 @@
 	{
 		"datatype": "category",
 		"standard_column_name": "gender",
+		"mandatory": true,
 		"standard_input_values": {
 			"categories": [
 				"Male",
@@ -28,6 +29,7 @@
 	{
 		"datatype": "int",
 		"standard_column_name": "age",
+        "mandatory": true,
 		"standard_input_values": {
 			"range": [
 				0,
@@ -44,6 +46,7 @@
 	{
 		"datatype": "category",
 		"standard_column_name": "race",
+        "mandatory": true,
 		"standard_input_values": {
 			"categories": [
 				"Caucasian",
@@ -80,6 +83,7 @@
 	{
 		"datatype": "category",
 		"standard_column_name": "vital status",
+        "mandatory": false,
 		"standard_input_values": {
 			"categories": [
 				"Dead",
@@ -106,6 +110,7 @@
 	{
 		"datatype": "category",
 		"standard_column_name": "smoking history",
+        "mandatory": true,
 		"standard_input_values": {
 			"categories": [
 				"Currently smoking",
@@ -142,6 +147,7 @@
 	{
 		"datatype": "float",
 		"standard_column_name": "height - cm",
+        "mandatory": true,
 		"standard_input_values": {
 			"range": [
 				135,
@@ -158,6 +164,7 @@
 	{
 		"datatype": "float",
 		"standard_column_name": "weight - kg",
+		"mandatory": true,
 		"standard_input_values": {
 			"range": [
 				35,
@@ -174,6 +181,7 @@
     {
         "datatype": "float",
         "standard_column_name": "glucose - mmol/L",
+        "mandatory": false,
         "standard_input_values": {
             "range": [
                 35,
@@ -190,6 +198,7 @@
     {
         "datatype": "float",
         "standard_column_name": "sodium_apache - mmol/L",
+        "mandatory": false,
         "standard_input_values": {
             "range": [
                 110,
@@ -206,6 +215,7 @@
     {
         "datatype": "int",
         "standard_column_name": "heart rate - bpm",
+        "mandatory": false,
         "standard_input_values": {
             "range": [
                 30,
@@ -222,6 +232,7 @@
     {
         "datatype": "float",
         "standard_column_name": "creatinine - micromol/L",
+        "mandatory": false,
         "standard_input_values": {
             "range": [
                 0.1,

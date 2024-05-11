@@ -30,9 +30,8 @@ def ds4(common_columns, query_ds4):
     df4 = ds4_preprocessor.preprocessed_df4
     df4.name = 'ds4'
 
-    knn_data_processor_ds4 = KNNDataProcessor(common_columns, df4)
-    user_input_processed_df4 = knn_data_processor_ds4.prepare_user_input_for_knn(query_ds4, "ds4")
-    nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor(user_input_processed_df4)
+    knn_data_processor_ds4 = KNNDataProcessor(common_columns, df4, query_ds4)
+    nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor()
 
     predictors = [
         DS4NNPredictor(df4, './Alpha/models/DS4NNPredictor.keras'),
@@ -48,9 +47,8 @@ def ds2(common_columns, query_ds2):
     df2 = ds2_preprocessor.preprocessed_df2
     df2.name = 'ds2'
 
-    knn_data_processor_ds2 = KNNDataProcessor(common_columns, df2)
-    user_input_processed_df2 = knn_data_processor_ds2.prepare_user_input_for_knn(query_ds2, "ds2")
-    nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor(user_input_processed_df2)
+    knn_data_processor_ds2 = KNNDataProcessor(common_columns, df2, query_ds2)
+    nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor()
 
     predictors = [
         DS2XGBoostPredictor(df2, './Alpha/models/DS2XGBoostPredictor.pkl'),
@@ -81,8 +79,8 @@ if __name__ == '__main__':
         'gender': 'Male',
         'race': 'Caucasian',
         'smoking history': 'Smoked in the past',
-        'height_cm': '153',
-        'weight_kg': '35',
+        'height - cm': 153,
+        'weight - kg': 35,
         'age': 30
     }
     calculate_risk(medical_data)

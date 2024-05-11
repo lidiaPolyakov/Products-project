@@ -52,8 +52,12 @@ class DataInputer:
             
             if column_name == 'vital status':
                 continue
-            if column_name not in data_input:
+            
+            if column["mandatory"] and column_name not in data_input:
                 errors[column_name] = "This field is required."
+                continue
+
+            if not column["mandatory"] and column_name not in data_input:
                 continue
 
             user_input = data_input[column_name]
