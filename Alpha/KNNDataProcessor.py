@@ -69,10 +69,16 @@ class KNNDataProcessor:
         return input_value
 
     def nearest_neighbor_metric(self, x, y):
+        # is nan for categorical columns
         categorical = np.isnan(self.min_max_scalers)
+        
+        # if not nan, then it is numeric
         numeric = ~categorical
+        
+        # numerical distance calculated using min-max scaling
         numeric_distance = np.sum(((x[numeric] - y[numeric]) / self.min_max_scalers[numeric]) ** 2)
         
+        # calculate categorical distance
         categorical_distance = 0
         x_categorical = x[categorical]
         y_categorical = y[categorical]
