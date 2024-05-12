@@ -9,6 +9,7 @@ class KNNDataProcessor:
         self.user_input = user_input
         self.df_copy = df.copy()
         self.df_copy.name = df.name
+        self.dtypes = self.df_copy.dtypes.copy()
 
         self.label_encoders = {}
         self.scalers = {}
@@ -109,7 +110,44 @@ class KNNDataProcessor:
                 row[dataset_column_name] = self.scalers[dataset_column_name].inverse_transform([[row[dataset_column_name]]])[0, 0]
         return row
  
-    def find_nearest_neighbor(self):
+    def _evaluate_nearest_neighbors(self, nearest_neighbors_rows):
+        """
+        Evaluate the nearest neighbors rows to find the mean of
+        the numerical columns and the mode of the categorical columns
+        Args:
+            nearest_neighbors_rows (pd.Dataframe): Dataframe containing the nearest neighbors rows
+        Returns:
+            pd.Dataframe: Dataframe containing the mean of the numerical columns and the mode of the categorical columns
+        """
+        
+        # save the original order of the columns
+        columns_order = nearest_neighbors_rows.columns
+        
+        for column in self.dtypes.index:
+            nearest_neighbors_rows[column] = nearest_neighbors_rows[column].astype(self.dtypes[column])
+        
+        # Identify the indices for which the data type is category
+        category_columns = nearest_neighbors_rows.dtypes == 'category'
+
+        # Select the column names where the data type is category
+        category_column_names = category_columns[category_columns].index.tolist()
+        
+        # Find the mode of the categorical columns
+        mode = nearest_neighbors_rows[category_column_names].mode().iloc[0]
+        
+        # Identify the indices for which the data type is numeric
+        numeric_columns = nearest_neighbors_rows.dtypes != 'category'
+
+        # Select the column names where the data type is 'category'
+        numeric_column_names = numeric_columns[numeric_columns].index.tolist()
+        
+        # Find the mean of the numerical columns
+        mean = nearest_neighbors_rows[numeric_column_names].mean()
+        
+        # return the mode and mean values in the same order as the input dataframe
+        return pd.concat([mode, mean]).reindex(columns_order)
+
+    def find_nearest_neighbor(self, n_neighbors=5):
         relevant_columns = []
         for col_info in self.common_columns:
             dataset_column_name = col_info["column"]["name"][self.df_copy.name]
@@ -122,14 +160,18 @@ class KNNDataProcessor:
         
         df_processed_relevant = df_copy[intersection_columns]
 
-        knn = NearestNeighbors(n_neighbors=1, algorithm='brute', metric=self.nearest_neighbor_metric)
+        knn = NearestNeighbors(n_neighbors=n_neighbors, algorithm='brute', metric=self.nearest_neighbor_metric)
         knn.fit(df_processed_relevant)
 
         knn_input_df = pd.DataFrame([self.processed_input], columns=intersection_columns)
-        nearest_neighbor_index = knn.kneighbors(knn_input_df, return_distance=False)[0][0]
+        nearest_neighbors_indices = knn.kneighbors(knn_input_df, return_distance=False)[0]
 
         # get the row of original values for the nearest neighbor
-        row = df_copy.iloc[nearest_neighbor_index].copy()
+        rows = df_copy.iloc[nearest_neighbors_indices].copy()
+        
+        # evaluate the nearest neighbors to get the mean of the
+        # numerical columns and the mode of the categorical columns
+        row = self._evaluate_nearest_neighbors(rows)
 
         # replace the nearest neighbor values with the available user input values
         for key in self.processed_input.keys():
