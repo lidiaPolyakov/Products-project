@@ -6,7 +6,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import AUC, Accuracy
 from tensorflow.keras.models import load_model
 
-from Predictor import Predictor
+from predictor import Predictor
 
 class DS4NNPredictor(Predictor):
     def __init__(self, df4, path, target_column='hospital_death'):

@@ -3,7 +3,7 @@ import joblib
 
 import xgboost as xgb
 
-from Predictor import Predictor
+from predictor import Predictor
 
 class DS2XGBoostPredictor(Predictor):
     def __init__(self, df2, path, target_column='VITAL_STATUS'):

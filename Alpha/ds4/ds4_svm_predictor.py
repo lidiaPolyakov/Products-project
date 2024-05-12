@@ -3,7 +3,7 @@ import joblib
 
 from sklearn.svm import SVC 
 
-from Predictor import Predictor
+from predictor import Predictor
 
 class DS4SVMPredictor(Predictor):
     def __init__(self, df4, path, target_column='hospital_death'):

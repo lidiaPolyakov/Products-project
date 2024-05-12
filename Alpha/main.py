@@ -1,19 +1,18 @@
 import pandas as pd
-import os
 import json
-from DataInputer import DataInputer
-from KNNDataProcessor import KNNDataProcessor
 
-from DS2.DS2PreProcessor import DS2PreProcessor
-from DS2.DS2XGBoostPredictor import DS2XGBoostPredictor
-from DS2.DS2SVMPredictor import DS2SVMPredictor
+from data_inputer import DataInputer
+from knn_data_processor import KNNDataProcessor
 
-from DS4.DS4PreProcessor import DS4PreProcessor
-from DS4.DS4NNPredictor import DS4NNPredictor
-from DS4.DS4NaiveBayesPredictor import DS4NaiveBayesPredictor
-from DS4.DS4SVMPredictor import DS4SVMPredictor
+from ds2.ds2_preprocessor import DS2PreProcessor
+from ds2.ds2_xgboost_predictor import DS2XGBoostPredictor
+from ds2.ds2_svm_predictor import DS2SVMPredictor
 
-from PredictionEvaluator import PredictionEvaluator
+from ds4.ds4_pre_processor import DS4PreProcessor
+from ds4.ds4_nn_predictor import DS4NNPredictor
+from ds4.ds4_naive_bayes_predictor import DS4NaiveBayesPredictor
+
+from prediction_evaluator import PredictionEvaluator
 
 evaluator = PredictionEvaluator()
 
