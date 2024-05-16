@@ -1,8 +1,9 @@
+import os
 from abc import ABC, abstractmethod
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
 class Predictor(ABC):
@@ -21,7 +22,7 @@ class Predictor(ABC):
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
     def train_model(self):
-        if self.load_model(self.path) is not None:
+        if os.path.isfile(self.path) and self.load_model(self.path) is not None:
             return
 
         if self.target_column not in self.preprocessed_data.columns:
@@ -41,7 +42,7 @@ class Predictor(ABC):
         """
         Load the model if a path is provided, preprocess the row, and predict using the model.
         """
-        if self.path is not None:
+        if self.path is not None and os.path.isfile(self.path):
             model = self.load_model(self.path)
         else:
             model = self.model
