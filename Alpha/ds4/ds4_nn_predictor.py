@@ -13,7 +13,7 @@ class DS4NNPredictor(Predictor):
         super().__init__(df4, path, target_column, test_size=0.2)
 
     def build_model(self, X_train, y_train):
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0., random_state=42)
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
         model = Sequential([
             Input(shape=(X_train.shape[1],)),
