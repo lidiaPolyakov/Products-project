@@ -21,16 +21,18 @@ class PredictionEvaluator:
         return: classes of risk assessment (low, medium, high)
         """
         
-        model_accuracies_0 = self.total_weights[0]
-        model_accuracies_1 = self.total_weights[1]
+        model_accuracies_0 = self.total_models_accuracies[0]
+        model_accuracies_1 = self.total_models_accuracies[1]
+        avg_model_accuracies_cls_0 = model_accuracies_0 / (model_accuracies_0 + model_accuracies_1)
+        avg_model_accuracies_cls_1 = model_accuracies_1 / (model_accuracies_0 + model_accuracies_1)
         
         if model_accuracies_1 > model_accuracies_0:
-            if model_accuracies_1 / (model_accuracies_0 + model_accuracies_1) > 0.5:  # More than 50% of the weight is towards class 1
+            if avg_model_accuracies_cls_1 > 0.5:  # More than 50% of the weight is towards class 1
                 return "high"
             else:
                 return "medium"
         else:
-            if model_accuracies_0 / (model_accuracies_0 + model_accuracies_1) > 0.5:  # More than 50% of the weight is towards class 0
+            if avg_model_accuracies_cls_0 > 0.5:  # More than 50% of the weight is towards class 0
                 return "low"
             else:
                 return "medium"
