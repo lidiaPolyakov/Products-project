@@ -1,0 +1,26 @@
+[
+    {
+        "datatype": "category",
+        "column": {
+            "name": {
+                "df1": "color"
+            },
+            "categories": {
+                "red": {
+                    "df1": "red"
+                },
+                "blue": {
+                    "df1": "blue"
+                }
+            }
+        }
+    },
+    {
+        "datatype": "numeric",
+        "column": {
+            "name": {
+                "df1": "height"
+            }
+        }
+    }
+]
