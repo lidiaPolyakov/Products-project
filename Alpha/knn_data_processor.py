@@ -133,7 +133,7 @@ class KNNDataProcessor:
         category_column_names = category_columns[category_columns].index.tolist()
         
         # Find the mode of the categorical columns
-        mode = nearest_neighbors_rows[category_column_names].mode().iloc[0]
+        mode = nearest_neighbors_rows[category_column_names].mode().iloc[0].astype('object')
         
         # Identify the indices for which the data type is numeric
         numeric_columns = nearest_neighbors_rows.dtypes != 'category'
