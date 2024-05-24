@@ -110,7 +110,7 @@ class KNNDataProcessor:
                 row[dataset_column_name] = self.scalers[dataset_column_name].inverse_transform([[row[dataset_column_name]]])[0, 0]
         return row
  
-    def _evaluate_nearest_neighbors(self, nearest_neighbors_rows):
+    def __evaluate_nearest_neighbors(self, nearest_neighbors_rows):
         """
         Evaluate the nearest neighbors rows to find the mean of
         the numerical columns and the mode of the categorical columns
@@ -124,7 +124,10 @@ class KNNDataProcessor:
         columns_order = nearest_neighbors_rows.columns
         
         for column in self.dtypes.index:
-            nearest_neighbors_rows[column] = nearest_neighbors_rows[column].astype(self.dtypes[column])
+            if isinstance(self.dtypes[column], pd.CategoricalDtype):
+                nearest_neighbors_rows[column] = nearest_neighbors_rows[column].astype("category")
+            else:
+                nearest_neighbors_rows[column] = nearest_neighbors_rows[column].astype(self.dtypes[column])
         
         # Identify the indices for which the data type is category
         category_columns = nearest_neighbors_rows.dtypes == 'category'
@@ -171,7 +174,7 @@ class KNNDataProcessor:
         
         # evaluate the nearest neighbors to get the mean of the
         # numerical columns and the mode of the categorical columns
-        row = self._evaluate_nearest_neighbors(rows)
+        row = self.__evaluate_nearest_neighbors(rows)
 
         # replace the nearest neighbor values with the available user input values
         for key in self.processed_input.keys():
