@@ -14,16 +14,14 @@ from ds4.ds4_naive_bayes_predictor import DS4NaiveBayesPredictor
 
 from prediction_evaluator import PredictionEvaluator
 
-evaluator = PredictionEvaluator()
-
-def run_predictor(target_column, predictor, ds_name, nearest_neighbor_row):
+def run_predictor(target_column, predictor, ds_name, nearest_neighbor_row, evaluator):
     print(f"Predicting {target_column} using {predictor.__class__.__name__} on {ds_name}")
     predictor.train_model()
     prediction = predictor.predict(nearest_neighbor_row)
     evaluation = predictor.evaluate_model()
     evaluator.add_prediction(prediction, evaluation)
 
-def ds4(common_columns, query_ds4):
+def ds4(common_columns, evaluator, query_ds4):
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
     ds4_preprocessor = DS4PreProcessor(df4)
     df4 = ds4_preprocessor.preprocessed_df4
@@ -38,9 +36,9 @@ def ds4(common_columns, query_ds4):
         # DS4SVMPredictor(df4, './Alpha/models/DS4SVMPredictor.pkl')
     ]
     for predictor in predictors:
-        run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4)
+        run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4, evaluator)
 
-def ds2(common_columns, query_ds2):
+def ds2(common_columns, evaluator, query_ds2):
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
     ds2_preprocessor = DS2PreProcessor(df2)
     df2 = ds2_preprocessor.preprocessed_df2
@@ -54,7 +52,7 @@ def ds2(common_columns, query_ds2):
         DS2SVMPredictor(df2, './Alpha/models/DS2SVMPredictor.pkl')
     ]
     for predictor in predictors:
-        run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2)
+        run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2, evaluator)
 
 
 def calculate_risk(medical_data):
@@ -64,9 +62,11 @@ def calculate_risk(medical_data):
     validated_data = data_processor.get_valid_input(medical_data)
     query_ds2, query_ds4 = data_processor.prepare_queries(validated_data)
     
-    ds2(common_columns, query_ds2)
+    evaluator = PredictionEvaluator()
     
-    ds4(common_columns, query_ds4)
+    ds2(common_columns, evaluator, query_ds2)
+    
+    ds4(common_columns, evaluator, query_ds4)
     
     risk_assessment = evaluator.evaluate_risk_assessment()
     
