@@ -43,11 +43,16 @@ def ds2(common_columns, df, evaluator, query_ds2):
         run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2, evaluator)
 
 
-def calculate_risk(medical_data):
+def calculate_risk(medical_data=None):
     with open('./Alpha/common_columns.json') as f:
         common_columns = json.load(f)
     data_processor = DataInputer(common_columns)
-    validated_data = data_processor.get_valid_input(medical_data)
+
+    if medical_data is None:
+        validated_data = data_processor.get_mock_data()
+    else:
+        validated_data = data_processor.get_valid_input(medical_data)
+
     query_ds2, query_ds4 = data_processor.prepare_queries(validated_data)
     
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
@@ -80,4 +85,6 @@ if __name__ == '__main__':
         'weight - kg': 35,
         'age': 30
     }
+    
+    # for random data don't pass any argument
     calculate_risk(medical_data)
