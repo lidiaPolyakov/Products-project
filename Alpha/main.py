@@ -19,7 +19,7 @@ def run_predictor(target_column, predictor, ds_name, nearest_neighbor_row, evalu
     predictor.train_model()
     prediction = predictor.predict(nearest_neighbor_row)
     evaluation = predictor.evaluate_model()
-    evaluator.add_prediction(prediction, evaluation)
+    evaluator.add_prediction(prediction, evaluation, ds_name)
 
 def ds4(common_columns, df, evaluator, query_ds4):
     knn_data_processor_ds4 = KNNDataProcessor(common_columns, df, query_ds4)
@@ -65,7 +65,16 @@ def calculate_risk(medical_data=None):
     df4 = ds4_preprocessor.preprocessed_df4
     df4.name = 'ds4'
     
-    evaluator = PredictionEvaluator()
+    evaluator = PredictionEvaluator(
+        ds2={
+            "doctor_votes": 5,
+            "num_rows": ds2_preprocessor.number_of_rows
+        },
+        ds4={
+            "doctor_votes": 1,
+            "num_rows": ds4_preprocessor.number_of_rows
+        }
+    )
     
     ds2(common_columns, df2, evaluator, query_ds2)
     
@@ -78,12 +87,13 @@ def calculate_risk(medical_data=None):
 
 if __name__ == '__main__':
     medical_data = {
-        'gender': 'Male',
-        'race': 'Caucasian',
-        'smoking history': 'Smoked in the past',
+        'gender': 'Female',
+        'race': 'African American',
+        'smoking history': 'Currently smoking',
         'height - cm': 153,
         'weight - kg': 35,
-        'age': 30
+        'age': 110,
+        'urine': 12.1824
     }
     
     # for random data don't pass any argument
