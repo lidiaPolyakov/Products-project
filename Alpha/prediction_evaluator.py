@@ -3,7 +3,7 @@ class PredictionEvaluator:
         """
         Initialize the PredictionEvaluator with a dictionary to track class weights.
         """
-        self.total_models_accuracies = { 0: 0, 1: 0 }
+        self.models_accuracies = { 0: [], 1: [] }
 
     def add_prediction(self, prediction, evaluation):
         """
@@ -11,7 +11,7 @@ class PredictionEvaluator:
         :param prediction: The predicted class (assumed to be the most likely class).
         :param evaluation: The evaluation result including accuracy.
         """
-        self.total_models_accuracies[prediction] += evaluation['accuracy']
+        self.models_accuracies[prediction].append(evaluation['accuracy'])
 
     def evaluate_risk_assessment(self):
         """
@@ -21,8 +21,8 @@ class PredictionEvaluator:
         return: classes of risk assessment (low, medium, high)
         """
         
-        model_accuracies_0 = self.total_models_accuracies[0]
-        model_accuracies_1 = self.total_models_accuracies[1]
+        model_accuracies_0 = sum(self.models_accuracies[0])
+        model_accuracies_1 = sum(self.models_accuracies[1])
         avg_model_accuracies_cls_0 = model_accuracies_0 / (model_accuracies_0 + model_accuracies_1)
         avg_model_accuracies_cls_1 = model_accuracies_1 / (model_accuracies_0 + model_accuracies_1)
         
