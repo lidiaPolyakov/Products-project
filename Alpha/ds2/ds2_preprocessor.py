@@ -10,6 +10,10 @@ class DS2PreProcessor:
     def preprocessed_df2(self):
         return self.__categorize_columns()
 
+    @property
+    def number_of_rows(self):
+        return len(self.preprocessed_df2)
+
     def __preprocess(self):
         self.__drop_unwanted_columns()
         self.__process_categorycal_columns()

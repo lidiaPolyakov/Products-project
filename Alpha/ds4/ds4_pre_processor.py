@@ -10,6 +10,10 @@ class DS4PreProcessor:
     def preprocessed_df4(self):
         return self.__categorize_columns()
 
+    @property
+    def number_of_rows(self):
+        return len(self.preprocessed_df4)
+
     def __preprocess(self):
         self.__process_binary_variables()
         self.__update_data_types()
