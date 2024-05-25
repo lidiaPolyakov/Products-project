@@ -4,6 +4,7 @@ class PredictionEvaluator:
         Initialize the PredictionEvaluator with a dictionary to track class weights.
         """
         self.models_accuracies = { 0: [], 1: [] }
+        self.number_of_rows_per_class = { 0: [], 1: [] }
 
     def add_prediction(self, prediction, evaluation):
         """
@@ -12,6 +13,7 @@ class PredictionEvaluator:
         :param evaluation: The evaluation result including accuracy.
         """
         self.models_accuracies[prediction].append(evaluation['accuracy'])
+        self.number_of_rows_per_class[prediction].append(evaluation['num_records'])
 
     def evaluate_risk_assessment(self):
         """
@@ -25,6 +27,12 @@ class PredictionEvaluator:
         model_accuracies_1 = sum(self.models_accuracies[1])
         avg_model_accuracies_cls_0 = model_accuracies_0 / (model_accuracies_0 + model_accuracies_1)
         avg_model_accuracies_cls_1 = model_accuracies_1 / (model_accuracies_0 + model_accuracies_1)
+        
+        sum_num_rows_0 = sum(self.number_of_rows_per_class[0])
+        sum_num_rows_1 = sum(self.number_of_rows_per_class[1])
+        avg_num_rows_cls_0 = sum_num_rows_0 / (sum_num_rows_0 + sum_num_rows_1)
+        avg_num_rows_cls_1 = sum_num_rows_1 / (sum_num_rows_0 + sum_num_rows_1)
+
         
         if model_accuracies_1 > model_accuracies_0:
             if avg_model_accuracies_cls_1 > 0.5:  # More than 50% of the weight is towards class 1

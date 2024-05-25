@@ -15,6 +15,7 @@ class Predictor(ABC):
         self.label_encoders = {}
         self.scalers = {}
         self.preprocessed_data = self.__preprocess_data()
+        self.num_records = len(self.df)
         
         X = self.preprocessed_data.drop(self.target_column, axis=1)
         y = self.preprocessed_data[self.target_column]
@@ -36,7 +37,9 @@ class Predictor(ABC):
             self.model = self.load_model(self.path)
         y_pred = self.model.predict(self.X_test)
         y_pred = (y_pred > 0.5).astype(int)
-        return classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
+        report = classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
+        report['num_records'] = self.num_records
+        return report
 
     def predict(self, row):
         """
