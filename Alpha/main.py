@@ -67,11 +67,11 @@ def calculate_risk(medical_data=None):
     
     evaluator = PredictionEvaluator(
         ds2={
-            "doctor_votes": 5,
+            "doctor_votes": 3,
             "num_rows": ds2_preprocessor.number_of_rows
         },
         ds4={
-            "doctor_votes": 1,
+            "doctor_votes": 3,
             "num_rows": ds4_preprocessor.number_of_rows
         }
     )
@@ -97,4 +97,9 @@ if __name__ == '__main__':
     }
     
     # for random data don't pass any argument
-    calculate_risk(medical_data)
+    assesments = []
+    for i in range(10):
+        assesments.append(calculate_risk())
+    
+    for assesment in assesments:
+        print(assesment)

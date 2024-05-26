@@ -58,16 +58,14 @@ class PredictionEvaluator:
         ds2 = 0
         for model in self.__models_for_ds2:
             ds2 += model['prediction'] * model['accuracy']
-        ds2 /= sum(x['accuracy'] for x in self.__models_for_ds2)
-        ds2 *= (weight_doctor_votes_ds2 + weight_num_rows_ds2)
-        ds2 /= 2 # divided by 2 because there are 2 datasets
+        ds2 /= len(self.__models_for_ds2)
+        ds2 *= (weight_doctor_votes_ds2 + weight_num_rows_ds2) / 2
         
         ds4 = 0
         for model in self.__models_for_ds4:
             ds4 += model['prediction'] * model['accuracy']
-        ds4 /= sum(x['accuracy'] for x in self.__models_for_ds4)
-        ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4)
-        ds4 /= 2 # divided by 2 because there are 2 datasets
+        ds4 /= len(self.__models_for_ds4)
+        ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4) / 2
         
         risk_precentage = ds2 + ds4
         
