@@ -22,14 +22,13 @@ class PredictionEvaluator:
         :param evaluation: The evaluation result including accuracy.
         """
         def arr(ds_name):
-            match ds_name:
-                case 'ds2':
-                    return self.__models_for_ds2
-                case 'ds4':
-                    return self.__models_for_ds4
-                case _:
-                    raise ValueError("Invalid ds_name. Must be either 'ds2' or 'ds4'")
-        
+            if ds_name == 'ds2':
+                return self.__models_for_ds2
+            elif ds_name == 'ds4':
+                return self.__models_for_ds4
+            else:
+                raise ValueError("Invalid ds_name. Must be either 'ds2' or 'ds4'")
+
         arr(ds_name).append({
             "prediction": prediction,
             "accuracy": evaluation['accuracy']
@@ -65,7 +64,7 @@ class PredictionEvaluator:
         for model in self.__models_for_ds4:
             ds4 += model['prediction'] * model['accuracy']
         ds4 /= len(self.__models_for_ds4)
-        ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4) / 2
+        ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4) / 3
         
         risk_precentage = ds2 + ds4
         

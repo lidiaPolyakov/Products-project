@@ -11,8 +11,8 @@ class DS4SVMPredictor(Predictor):
 
     def build_model(self, X_train, y_train):
         svm_model = SVC(probability=True)
-        svm_model.fit(X_train, y_train)
-        return svm_model
+        model = svm_model.fit(X_train, y_train)
+        return model
 
     def save_model(self, model_path):
         if model_path is None: return

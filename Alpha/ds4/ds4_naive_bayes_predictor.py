@@ -24,3 +24,4 @@ class DS4NaiveBayesPredictor(Predictor):
         if model_path is not None:
             return joblib.load(model_path)
         return self.model
+    
