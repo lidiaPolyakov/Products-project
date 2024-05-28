@@ -7,7 +7,8 @@ from knn_data_processor import KNNDataProcessor
 from ds2.ds2_preprocessor import DS2PreProcessor
 from ds2.ds2_xgboost_predictor import DS2XGBoostPredictor
 from ds2.ds2_svm_predictor import DS2SVMPredictor
-from ds2.ds2_nn_predictor import DS2NNPredictor
+from ds2.ds2_extra_tree_predictor import DS2ExtraTreePredictor
+from ds2.ds2_decision_tree_predictor import DS2DecisionTreePredictor
 
 from ds4.ds4_pre_processor import DS4PreProcessor
 from ds4.ds4_nn_predictor import DS4NNPredictor
@@ -42,7 +43,8 @@ def ds2(common_columns, df, evaluator, query_ds2):
     predictors = [
         DS2XGBoostPredictor(df, './Alpha/models/DS2XGBoostPredictor.pkl'),
         DS2SVMPredictor(df, './Alpha/models/DS2SVMPredictor.pkl'),
-        DS2NNPredictor(df, './Alpha/models/DS2NNPredictor.keras')
+        DS2ExtraTreePredictor(df, './Alpha/models/DS2ExtraTreePredictor.keras'),
+        DS2DecisionTreePredictor(df, './Alpha/models/DS2DecisionTreePredictor.pkl')
     ]
     for predictor in predictors:
         run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2, evaluator)
