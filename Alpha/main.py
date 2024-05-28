@@ -11,6 +11,8 @@ from ds2.ds2_svm_predictor import DS2SVMPredictor
 from ds4.ds4_pre_processor import DS4PreProcessor
 from ds4.ds4_nn_predictor import DS4NNPredictor
 from ds4.ds4_naive_bayes_predictor import DS4NaiveBayesPredictor
+from ds4.ds4_svm_predictor import DS4SVMPredictor
+from ds4.ds4_xgboost_predictor import DS4XGBoostPredictor
 
 from prediction_evaluator import PredictionEvaluator
 
@@ -27,7 +29,8 @@ def ds4(common_columns, df, evaluator, query_ds4):
     predictors = [
         DS4NNPredictor(df, './Alpha/models/DS4NNPredictor.keras'),
         DS4NaiveBayesPredictor(df, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
-        # DS4SVMPredictor(df, './Alpha/models/DS4SVMPredictor.pkl')
+        DS4SVMPredictor(df, './Alpha/models/DS4SVMPredictor.pkl'),
+        DS4XGBoostPredictor(df, './Alpha/models/DS4XGBoostPredictor.pkl')
     ]
     for predictor in predictors:
         run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4, evaluator)
@@ -93,13 +96,13 @@ if __name__ == '__main__':
         'height - cm': 153,
         'weight - kg': 35,
         'age': 110,
-        'urine': 12.1824
+        'urine':12.1824
+        
     }
-    
-    # for random data don't pass any argument
-    assesments = []
-    for i in range(10):
-        assesments.append(calculate_risk())
-    
-    for assesment in assesments:
-        print(assesment)
+    calculate_risk(medical_data)
+
+
+#Painful Urination: Might reduce output due to discomfort -  50 ml
+#Difficulties in Stooling: Does not directly affect urine output, but could indicate dehydration affecting overall fluid balance. - 400 ml
+#Frequent Urination: Likely increases output. 2000 ml
+#Yellow, Green Discharge: Indicates possible infection, not directly affecting output volume but clinically significant. 2500 ml
