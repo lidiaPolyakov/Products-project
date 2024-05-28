@@ -58,7 +58,7 @@ class PredictionEvaluator:
         for model in self.__models_for_ds2:
             ds2 += model['prediction'] * model['accuracy']
         ds2 /= len(self.__models_for_ds2)
-        ds2 *= (weight_doctor_votes_ds2 + weight_num_rows_ds2) / 2
+        ds2 *= (weight_doctor_votes_ds2 + weight_num_rows_ds2) / 3
         
         ds4 = 0
         for model in self.__models_for_ds4:
