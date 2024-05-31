@@ -6,8 +6,8 @@ from sklearn.naive_bayes import GaussianNB
 from predictor import Predictor
 
 class DS4NaiveBayesPredictor(Predictor):
-    def __init__(self, df4, path, target_column='hospital_death'):
-        super().__init__(df4, path, target_column, test_size=0.3)
+    def __init__(self, df4, path):
+        super().__init__(df4, path)
 
     def build_model(self, X_train, y_train):
         gnb_classifier = GaussianNB()

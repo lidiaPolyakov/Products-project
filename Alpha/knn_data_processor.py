@@ -4,11 +4,11 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.neighbors import NearestNeighbors
 
 class KNNDataProcessor:
-    def __init__(self, common_columns, df, user_input):
+    def __init__(self, common_columns, df, df_name, user_input):
         self.common_columns = common_columns
         self.user_input = user_input
         self.df_copy = df.copy()
-        self.df_copy.name = df.name
+        self.df_name = df_name
         self.dtypes = self.df_copy.dtypes.copy()
 
         self.label_encoders = {}
@@ -23,7 +23,7 @@ class KNNDataProcessor:
 
         for col_info in self.common_columns:
             datatype = col_info["datatype"]
-            column_name = col_info["column"]["name"][self.df_copy.name]
+            column_name = col_info["column"]["name"][self.df_name]
             if column_name is None:
                 continue
             if column_name not in self.user_input:
@@ -49,7 +49,7 @@ class KNNDataProcessor:
                 self.max_freq_matrices.append(max_freq_matrix)
 
                 input_val = user_input[column_name]
-                mapped_input_val = self.map_input_to_dataset_value(input_val, col_info, self.df_copy.name)
+                mapped_input_val = self.map_input_to_dataset_value(input_val, col_info, self.df_name)
                 input_val = self.label_encoders[column_name].transform([str(mapped_input_val)])[0]
             else:
                 scaler = StandardScaler()
@@ -101,7 +101,7 @@ class KNNDataProcessor:
     def inverse_transform_row(self, row):
         # inverse transform the row to get the original values
         for col_info in self.common_columns:
-            dataset_column_name = col_info["column"]["name"][self.df_copy.name]
+            dataset_column_name = col_info["column"]["name"][self.df_name]
             if dataset_column_name is None:
                 continue
             if col_info["datatype"] == "category" and dataset_column_name in self.label_encoders:
@@ -153,7 +153,7 @@ class KNNDataProcessor:
     def find_nearest_neighbor(self, n_neighbors=5):
         relevant_columns = []
         for col_info in self.common_columns:
-            dataset_column_name = col_info["column"]["name"][self.df_copy.name]
+            dataset_column_name = col_info["column"]["name"][self.df_name]
             if dataset_column_name is None:
                 continue
             relevant_columns.append(dataset_column_name)

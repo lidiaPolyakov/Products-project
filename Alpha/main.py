@@ -21,23 +21,23 @@ def run_predictor(target_column, predictor, ds_name, nearest_neighbor_row, evalu
     evaluation = predictor.evaluate_model()
     evaluator.add_prediction(prediction, evaluation, ds_name)
 
-def ds4(common_columns, df, evaluator, query_ds4):
-    knn_data_processor_ds4 = KNNDataProcessor(common_columns, df, query_ds4)
+def ds4(common_columns, preprocessor, evaluator, query_ds4):
+    knn_data_processor_ds4 = KNNDataProcessor(common_columns, preprocessor.get_preprocessed_data, "ds4", query_ds4)
     nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor()
     predictors = [
-        DS4NNPredictor(df, './Alpha/models/DS4NNPredictor.keras'),
-        DS4NaiveBayesPredictor(df, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
+        DS4NNPredictor(preprocessor, './Alpha/models/DS4NNPredictor.keras'),
+        DS4NaiveBayesPredictor(preprocessor, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
         # DS4SVMPredictor(df, './Alpha/models/DS4SVMPredictor.pkl')
     ]
     for predictor in predictors:
         run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4, evaluator)
 
-def ds2(common_columns, df, evaluator, query_ds2):
-    knn_data_processor_ds2 = KNNDataProcessor(common_columns, df, query_ds2)
+def ds2(common_columns, preprocessor, evaluator, query_ds2):
+    knn_data_processor_ds2 = KNNDataProcessor(common_columns, preprocessor.get_preprocessed_data, "ds2", query_ds2)
     nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor()
     predictors = [
-        DS2XGBoostPredictor(df, './Alpha/models/DS2XGBoostPredictor.pkl'),
-        DS2SVMPredictor(df, './Alpha/models/DS2SVMPredictor.pkl')
+        DS2XGBoostPredictor(preprocessor, './Alpha/models/DS2XGBoostPredictor.pkl'),
+        DS2SVMPredictor(preprocessor, './Alpha/models/DS2SVMPredictor.pkl')
     ]
     for predictor in predictors:
         run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2, evaluator)
@@ -57,28 +57,24 @@ def calculate_risk(medical_data=None):
     
     df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
     ds2_preprocessor = DS2PreProcessor(df2)
-    df2 = ds2_preprocessor.preprocessed_df2
-    df2.name = 'ds2'
     
     df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
     ds4_preprocessor = DS4PreProcessor(df4)
-    df4 = ds4_preprocessor.preprocessed_df4
-    df4.name = 'ds4'
     
     evaluator = PredictionEvaluator(
         ds2={
             "doctor_votes": 3,
-            "num_rows": ds2_preprocessor.number_of_rows
+            "num_rows": ds2_preprocessor.number_of_rows()
         },
         ds4={
             "doctor_votes": 3,
-            "num_rows": ds4_preprocessor.number_of_rows
+            "num_rows": ds4_preprocessor.number_of_rows()
         }
     )
     
-    ds2(common_columns, df2, evaluator, query_ds2)
+    ds2(common_columns, ds2_preprocessor, evaluator, query_ds2)
     
-    ds4(common_columns, df4, evaluator, query_ds4)
+    ds4(common_columns, ds4_preprocessor, evaluator, query_ds4)
     
     risk_assessment = evaluator.evaluate_risk_assessment()
     

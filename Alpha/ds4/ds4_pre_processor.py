@@ -1,18 +1,20 @@
 import pandas as pd
 
-class DS4PreProcessor:
-    def __init__(self, df4):
+from preprocessor import Preprocessor
+
+class DS4PreProcessor(Preprocessor):
+    def __init__(self, df4, target_column='hospital_death', test_size=0.2):
         self.df4 = df4.copy()
         self.df4_dict = pd.read_csv("Alpha/datasets/dataset4 dictionary.csv")
         self.__preprocess()
+        super().__init__(self.df4, target_column, test_size)
 
     @property
-    def preprocessed_df4(self):
+    def get_preprocessed_data(self):
         return self.__categorize_columns()
 
-    @property
     def number_of_rows(self):
-        return len(self.preprocessed_df4)
+        return len(self.get_preprocessed_data)
 
     def __preprocess(self):
         self.__process_binary_variables()

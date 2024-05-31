@@ -6,8 +6,8 @@ import xgboost as xgb
 from predictor import Predictor
 
 class DS2XGBoostPredictor(Predictor):
-    def __init__(self, df2, path, target_column='VITAL_STATUS'):
-        super().__init__(df2, path, target_column, test_size=0.3)
+    def __init__(self, preprocessor, path):
+        super().__init__(preprocessor, path)
 
     def build_model(self, X_train, y_train):
         xgb_classifier = xgb.XGBClassifier(

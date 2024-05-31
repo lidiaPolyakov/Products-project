@@ -1,18 +1,20 @@
 import pandas as pd
 import numpy as np
 
-class DS2PreProcessor:
-    def __init__(self, df2):
+from preprocessor import Preprocessor
+
+class DS2PreProcessor(Preprocessor):
+    def __init__(self, df2, target_column='VITAL_STATUS', test_size=0.2):
         self.df2 = df2.copy()
         self.__preprocess()
+        super().__init__(self.df2, target_column, test_size)
 
     @property
-    def preprocessed_df2(self):
+    def get_preprocessed_data(self):
         return self.__categorize_columns()
 
-    @property
     def number_of_rows(self):
-        return len(self.preprocessed_df2)
+        return len(self.get_preprocessed_data)
 
     def __preprocess(self):
         self.__drop_unwanted_columns()
