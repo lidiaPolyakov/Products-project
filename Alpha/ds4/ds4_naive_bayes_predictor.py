@@ -6,8 +6,8 @@ from sklearn.naive_bayes import GaussianNB
 from predictor import Predictor
 
 class DS4NaiveBayesPredictor(Predictor):
-    def __init__(self, df4, path):
-        super().__init__(df4, path)
+    def __init__(self, preprocessor, path):
+        super().__init__(preprocessor, path)
 
     def build_model(self, X_train, y_train):
         gnb_classifier = GaussianNB()

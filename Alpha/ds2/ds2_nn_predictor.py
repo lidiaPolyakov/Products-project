@@ -8,7 +8,7 @@ from tensorflow.keras.models import load_model
 
 from predictor import Predictor
 
-class DS4NNPredictor(Predictor):
+class DS2NNPredictor(Predictor):
     def __init__(self, preprocessor, path):
         super().__init__(preprocessor, path)
 
@@ -18,9 +18,9 @@ class DS4NNPredictor(Predictor):
         model = Sequential([
             Input(shape=(X_train.shape[1],)),
             Dense(128),
-            LeakyReLU(negative_slope=0.01),
+            LeakyReLU(alpha=0.01),
             Dense(64),
-            LeakyReLU(negative_slope=0.01),
+            LeakyReLU(alpha=0.01),
             Dense(1, activation='sigmoid')
         ])
 

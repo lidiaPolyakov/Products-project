@@ -1,17 +1,23 @@
 import os
 import joblib
 
-from sklearn.svm import SVC 
+import xgboost as xgb
 
 from predictor import Predictor
 
-class DS4SVMPredictor(Predictor):
+class DS4XGBoostPredictor(Predictor):
     def __init__(self, preprocessor, path):
         super().__init__(preprocessor, path)
 
     def build_model(self, X_train, y_train):
-        svm_model = SVC(probability=True)
-        model = svm_model.fit(X_train, y_train)
+        xgb_classifier = xgb.XGBClassifier(
+            n_estimators=1000,
+            learning_rate=0.1,
+            use_label_encoder=False,
+            eval_metric='logloss',
+            max_depth=6
+        )
+        model = xgb_classifier.fit(X_train, y_train)
         return model
 
     def save_model(self, model_path):
