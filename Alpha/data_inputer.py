@@ -2,11 +2,11 @@ import random
 
 class DataInputer:
     def __init__(self, common_columns):
-        self.common_columns = common_columns
+        self.__common_columns = common_columns
 
     def get_mock_data(self):
         mock_inputs = {}
-        for column in self.common_columns:
+        for column in self.__common_columns:
             datatype = column["datatype"]
             column_name = column["standard_column_name"]
 
@@ -24,7 +24,7 @@ class DataInputer:
         user_inputs = {}
         errors = {}
 
-        for column in self.common_columns:
+        for column in self.__common_columns:
             datatype = column["datatype"]
             column_name = column["standard_column_name"]
             
@@ -63,7 +63,7 @@ class DataInputer:
     def prepare_queries(self, input_columns):
         query_for_ds2 = {}
         query_for_ds4 = {}
-        for common_column in self.common_columns:
+        for common_column in self.__common_columns:
             standard_column_name = common_column["standard_column_name"]
             
             if standard_column_name in input_columns:
