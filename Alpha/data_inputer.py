@@ -4,28 +4,6 @@ class DataInputer:
     def __init__(self, common_columns):
         self.common_columns = common_columns
 
-    def show_category_options(self, allowed_categories):
-        print("Options:")
-        for category in allowed_categories:
-            print(f"- {category}")
-
-    def validate_category_input(self, input_value, allowed_categories):
-        return input_value in allowed_categories
-
-    def validate_int_input(self, input_value, value_range):
-        try:
-            value = int(input_value)
-            return value_range[0] <= value <= value_range[1]
-        except ValueError:
-            return False
-
-    def validate_float_input(self, input_value, value_range):
-        try:
-            value = float(input_value)
-            return value_range[0] <= value <= value_range[1]
-        except ValueError:
-            return False
-
     def get_mock_data(self):
         mock_inputs = {}
         for column in self.common_columns:
@@ -64,15 +42,15 @@ class DataInputer:
 
             if datatype == "category":
                 allowed_categories = column["standard_input_values"]["categories"]
-                if not self.validate_category_input(user_input, allowed_categories):
+                if not self.__validate_category_input(user_input, allowed_categories):
                     errors[column_name] = f"Invalid category. Allowed options: {', '.join(allowed_categories)}"
             elif datatype == "int":
                 allowed_range = column["standard_input_values"]["range"]
-                if not self.validate_int_input(user_input, allowed_range):
+                if not self.__validate_int_input(user_input, allowed_range):
                     errors[column_name] = f"Input must be an integer within the range {allowed_range}."
             elif datatype == "float":
                 allowed_range = column["standard_input_values"]["range"]
-                if not self.validate_float_input(user_input, allowed_range):
+                if not self.__validate_float_input(user_input, allowed_range):
                     errors[column_name] = f"Input must be a float within the range {allowed_range}."
 
             if column_name not in errors:
@@ -98,3 +76,20 @@ class DataInputer:
                     query_for_ds4[df4_column_name] = input_columns[standard_column_name]
 
         return query_for_ds2, query_for_ds4
+
+    def __validate_category_input(self, input_value, allowed_categories):
+        return input_value in allowed_categories
+
+    def __validate_int_input(self, input_value, value_range):
+        try:
+            value = int(input_value)
+            return value_range[0] <= value <= value_range[1]
+        except ValueError:
+            return False
+
+    def __validate_float_input(self, input_value, value_range):
+        try:
+            value = float(input_value)
+            return value_range[0] <= value <= value_range[1]
+        except ValueError:
+            return False
