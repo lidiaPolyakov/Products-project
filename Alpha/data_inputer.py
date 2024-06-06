@@ -20,7 +20,7 @@ class DataInputer:
 
         return mock_inputs
 
-    def get_valid_input(self, data_input):
+    def get_valid_input(self, data_input, is_discard_errors=False):
         user_inputs = {}
         errors = {}
 
@@ -55,7 +55,8 @@ class DataInputer:
 
             if column_name not in errors:
                 user_inputs[column_name] = user_input    
-        if errors:
+        
+        if errors and not is_discard_errors:
             raise ValueError("Input validation errors", errors)    
 
         return user_inputs
