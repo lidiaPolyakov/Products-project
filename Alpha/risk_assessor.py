@@ -43,6 +43,18 @@ class RiskAssessor:
 
         return self.__evaluator.evaluate_risk_assessment()
 
+    @property
+    def ds2_test_data(self):
+        X_test_before_encoding = self.__ds2_preprocessor.get_test[0]
+        y_test_after_encoding = self.__ds2_preprocessor.get_test_encoded[1]
+        return X_test_before_encoding, y_test_after_encoding
+    
+    @property
+    def ds4_test_data(self):
+        X_test_before_encoding = self.__ds4_preprocessor.get_test[0]
+        y_test_after_encoding = self.__ds4_preprocessor.get_test_encoded[1]
+        return X_test_before_encoding, y_test_after_encoding
+
     def __ds2(self, common_columns, preprocessor, evaluator, query_ds2):
         knn_data_processor_ds2 = KNNDataProcessor(common_columns, preprocessor.get_preprocessed_data, "ds2", query_ds2)
         nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor()

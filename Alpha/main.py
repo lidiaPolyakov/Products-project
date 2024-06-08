@@ -33,3 +33,7 @@ if __name__ == '__main__':
     
     risk = risk_assessor.calculate_risk(query=validated_data)
     print(f"Risk assessment: {risk}")
+    
+    validator = Validator(data_inputer, risk_assessor)
+    validator.validate_ds2()
+    validator.validate_ds4()

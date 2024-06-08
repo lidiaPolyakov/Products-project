@@ -54,8 +54,8 @@ class DataInputer:
                     errors[column_name] = f"Input must be a float within the range {allowed_range}."
 
             if column_name not in errors:
-                user_inputs[column_name] = user_input    
-        
+                user_inputs[column_name] = user_input   
+ 
         if errors and not is_discard_errors:
             raise ValueError("Input validation errors", errors)    
 
@@ -77,6 +77,17 @@ class DataInputer:
                     query_for_ds4[df4_column_name] = input_columns[standard_column_name]
 
         return query_for_ds2, query_for_ds4
+
+    def translate_ds_columns_to_standard(self, ds_name, ds_columns):
+        if ds_name not in ["ds2", "ds4"]:
+            raise ValueError("Invalid dataset name")
+        translated_columns = {}
+        for common_column in self.__common_columns:
+            standard_column_name = common_column["standard_column_name"]
+            column_name = common_column["column"]["name"][ds_name]
+            if column_name is not None and column_name in ds_columns:
+                translated_columns[standard_column_name] = ds_columns[column_name]
+        return translated_columns
 
     def __validate_category_input(self, input_value, allowed_categories):
         return input_value in allowed_categories
