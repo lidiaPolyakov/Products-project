@@ -1,5 +1,4 @@
 import pandas as pd
-import json
 
 from data_inputer import DataInputer
 
@@ -21,10 +20,9 @@ from knn_data_processor import KNNDataProcessor
 from prediction_evaluator import PredictionEvaluator
 
 class RiskAssessor:
-    def __init__(self, ds2_doctor_vote=1, ds4_doctor_vote=1):
-        with open('./Alpha/common_columns.json') as f:
-            self.__common_columns = json.load(f)
-        self.__data_inputer = DataInputer(self.__common_columns)
+    def __init__(self, data_inputer: DataInputer, common_columns, ds2_doctor_vote=1, ds4_doctor_vote=1):
+        self.__data_inputer = data_inputer
+        self.__common_columns = common_columns
         
         df2 = pd.read_csv('./Alpha/datasets/dataset2.csv')
         self.__ds2_preprocessor = DS2PreProcessor(df2)
@@ -38,12 +36,7 @@ class RiskAssessor:
         )
 
     def calculate_risk(self, query=None):
-        if query is None:
-            validated_data = self.__data_inputer.get_mock_data()
-        else:
-            validated_data = self.__data_inputer.get_valid_input(query)
-
-        self.__query_ds2, self.__query_ds4 = self.__data_inputer.prepare_queries(validated_data)
+        self.__query_ds2, self.__query_ds4 = self.__data_inputer.prepare_queries(query)
 
         self.__ds2(self.__common_columns, self.__ds2_preprocessor, self.__evaluator, self.__query_ds2)
         self.__ds4(self.__common_columns, self.__ds4_preprocessor, self.__evaluator, self.__query_ds4)
