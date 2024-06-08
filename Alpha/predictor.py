@@ -12,14 +12,14 @@ class Predictor(ABC):
         if os.path.isfile(self.path) and self.load_model(self.path) is not None:
             return
 
-        X_train, y_train = self.preprocessor.get_train
+        X_train, y_train = self.preprocessor.get_train_encoded
         self.model = self.build_model(X_train, y_train)
         self.save_model(self.path)
 
     def evaluate_model(self):
         if self.path is not None:
             self.model = self.load_model(self.path)
-        X_test, y_test = self.preprocessor.get_test
+        X_test, y_test = self.preprocessor.get_test_encoded
         y_pred = self.model.predict(X_test)
         y_pred = (y_pred > 0.5).astype(int)
         return classification_report(y_test, y_pred, output_dict=True, zero_division=0)

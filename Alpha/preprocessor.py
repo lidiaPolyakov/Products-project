@@ -28,26 +28,40 @@ class Preprocessor(ABC):
         except ValueError:
             categorical_data_imputed[self.target_column] = categorical_data_imputed[self.target_column].astype('category')
 
-        preprocessed_data = pd.concat([numeric_data_imputed, categorical_data_imputed], axis=1)
+        self.__preprocessed_data = pd.concat([numeric_data_imputed, categorical_data_imputed], axis=1)
+
+        X = self.__preprocessed_data.drop(self.target_column, axis=1)
+        y = self.__preprocessed_data[self.target_column]
+
+        self.__X_train, self.__X_test, self.__y_train, self.__y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+
+        self.__X_train_encoded = self.__X_train.copy()
+        self.__X_test_encoded = self.__X_test.copy()
 
         label_encoders = {}
-        for col in categorical_columns:
+        for column in categorical_columns:
             le = LabelEncoder()
-            preprocessed_data[col] = le.fit_transform(preprocessed_data[col])
-            label_encoders[col] = le
+            self.__preprocessed_data[column] = le.fit_transform(self.__preprocessed_data[column])
+            if column in self.__X_train.columns:
+                self.__X_train_encoded[column] = le.transform(self.__X_train[column])
+            if column in self.__X_test.columns:
+                self.__X_test_encoded[column] = le.transform(self.__X_test[column])
+            label_encoders[column] = le
         self.label_encoders = label_encoders
         
         scalers = {}
-        for col in numeric_columns:
+        for column in numeric_columns:
             scaler = StandardScaler()
-            preprocessed_data[col] = scaler.fit_transform(preprocessed_data[[col]])
-            scalers[col] = scaler
+            self.__preprocessed_data[column] = scaler.fit_transform(self.__preprocessed_data[[column]])
+            if column in self.__X_train.columns:
+                self.__X_train_encoded[column] = scaler.transform(self.__X_train[[column]])
+            if column in self.__X_test.columns:
+                self.__X_test_encoded[column] = scaler.transform(self.__X_test[[column]])
+            scalers[column] = scaler
         self.scalers = scalers
         
-        self.__preprocessed_data = preprocessed_data
-        X = self.__preprocessed_data.drop(self.target_column, axis=1)
-        y = self.__preprocessed_data[self.target_column]
-        self.__X_train, self.__X_test, self.__y_train, self.__y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+        self.__y_train_encoded = self.label_encoders[self.target_column].transform(self.__y_train)
+        self.__y_test_encoded = self.label_encoders[self.target_column].transform(self.__y_test)
 
     def preprocess_row(self, row):
         """
@@ -67,7 +81,7 @@ class Preprocessor(ABC):
             elif column in numeric_columns:
                 value_df = pd.DataFrame({column: [ float(value.iloc[0]) ]})
                 row[column] = self.scalers[column].transform(value_df)[0, 0]
-        X_train = self.get_train[0]
+        X_train = self.get_train_encoded[0]
         return row.reindex(X_train.columns, axis=1, fill_value=0)
 
     def impute_row(self, row):
@@ -81,7 +95,7 @@ class Preprocessor(ABC):
                     row[column] = self.df[column].mode()[0]
                 elif column in self.scalers:
                     row[column] = self.df[column].median()
-        X_train = self.get_train[0]
+        X_train = self.get_train_encoded[0]
         return row.reindex(X_train.columns, axis=1, fill_value=0)
 
     @property
@@ -95,6 +109,14 @@ class Preprocessor(ABC):
     @property
     def get_test(self):
         return self.__X_test.copy(), self.__y_test.copy()
+    
+    @property
+    def get_train_encoded(self):
+        return self.__X_train_encoded.copy(), self.__y_train_encoded.copy()
+    
+    @property
+    def get_test_encoded(self):
+        return self.__X_test_encoded.copy(), self.__y_test_encoded.copy()
 
     @abstractmethod
     def number_of_rows(self):
