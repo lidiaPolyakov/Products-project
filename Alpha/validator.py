@@ -1,3 +1,4 @@
+import pandas as pd
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -9,6 +10,9 @@ class Validator:
     def __init__(self, data_inputer: DataInputer, risk_assessor: RiskAssessor):
         self.__data_inputer = data_inputer
         self.__risk_assessor = risk_assessor
+        
+        self.__ckd = pd.read_csv('./Alpha/datasets/validation sets/ckd.csv')
+        self.__disease = pd.read_csv('./Alpha/datasets/validation sets/Disease.csv')
     
     def validate_ds2(self):
         """
@@ -23,6 +27,12 @@ class Validator:
         """
         X_test, y_test = self.__risk_assessor.ds4_test_data
         self.__validate_dataset(X_test, y_test, 100, "ds4")
+
+    def validate_ckd(self):
+        pass
+
+    def validate_disease(self):
+        pass
 
     def __validate_dataset(self, X_test, y_test, part, ds_name):
         # initialize the mean squared error
