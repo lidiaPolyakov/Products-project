@@ -16,8 +16,8 @@ from ds4.ds4_svm_predictor import DS4SVMPredictor
 from ds4.ds4_xgboost_predictor import DS4XGBoostPredictor
 
 from knn_data_processor import KNNDataProcessor
-
 from prediction_evaluator import PredictionEvaluator
+from predictor import Predictor
 
 class RiskAssessor:
     def __init__(self, data_inputer: DataInputer, common_columns):
@@ -36,35 +36,35 @@ class RiskAssessor:
             ds4={ "doctor_votes": ds4_doctor_vote, "num_rows": self.__ds4_preprocessor.number_of_rows() }
         )
         query_ds2, query_ds4 = self.__data_inputer.prepare_queries(query)
-        self.__ds2(self.__common_columns, self.__ds2_preprocessor, evaluator, query_ds2)
-        self.__ds4(self.__common_columns, self.__ds4_preprocessor, evaluator, query_ds4)
+        self.__ds2(evaluator, query_ds2)
+        self.__ds4(evaluator, query_ds4)
         return evaluator.evaluate_risk_assessment()
 
-    def __ds2(self, common_columns, preprocessor, evaluator, query_ds2):
-        knn_data_processor_ds2 = KNNDataProcessor(common_columns, preprocessor.get_preprocessed_data, "ds2", query_ds2)
+    def __ds2(self, evaluator: PredictionEvaluator, query_ds2):
+        knn_data_processor_ds2 = KNNDataProcessor(self.__common_columns, self.__ds2_preprocessor.get_preprocessed_data, "ds2", query_ds2)
         nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor()
         predictors = [
-            DS2XGBoostPredictor(preprocessor, './Alpha/models/DS2XGBoostPredictor.pkl'),
-            DS2SVMPredictor(preprocessor, './Alpha/models/DS2SVMPredictor.pkl'),
-            DS2ExtraTreePredictor(preprocessor, './Alpha/models/DS2ExtraTreePredictor.keras'),
-            DS2DecisionTreePredictor(preprocessor, './Alpha/models/DS2DecisionTreePredictor.pkl')
+            DS2XGBoostPredictor(self.__ds2_preprocessor, './Alpha/models/DS2XGBoostPredictor.pkl'),
+            DS2SVMPredictor(self.__ds2_preprocessor, './Alpha/models/DS2SVMPredictor.pkl'),
+            DS2ExtraTreePredictor(self.__ds2_preprocessor, './Alpha/models/DS2ExtraTreePredictor.keras'),
+            DS2DecisionTreePredictor(self.__ds2_preprocessor, './Alpha/models/DS2DecisionTreePredictor.pkl')
         ]
         for predictor in predictors:
-            self.__run_predictor('VITAL_STATUS', predictor, "ds2", nearest_neighbor_row_ds2, evaluator)
+            self.__run_predictor('VITAL_STATUS', "ds2", nearest_neighbor_row_ds2, predictor, evaluator)
 
-    def __ds4(self, common_columns, preprocessor, evaluator, query_ds4):
-        knn_data_processor_ds4 = KNNDataProcessor(common_columns, preprocessor.get_preprocessed_data, "ds4", query_ds4)
+    def __ds4(self, evaluator: PredictionEvaluator, query_ds4):
+        knn_data_processor_ds4 = KNNDataProcessor(self.__common_columns, self.__ds4_preprocessor.get_preprocessed_data, "ds4", query_ds4)
         nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor()
         predictors = [
-            DS4NNPredictor(preprocessor, './Alpha/models/DS4NNPredictor.keras'),
-            DS4NaiveBayesPredictor(preprocessor, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
-            DS4SVMPredictor(preprocessor, './Alpha/models/DS4SVMPredictor.pkl'),
-            DS4XGBoostPredictor(preprocessor, './Alpha/models/DS4XGBoostPredictor.pkl')
+            DS4NNPredictor(self.__ds4_preprocessor, './Alpha/models/DS4NNPredictor.keras'),
+            DS4NaiveBayesPredictor(self.__ds4_preprocessor, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
+            DS4SVMPredictor(self.__ds4_preprocessor, './Alpha/models/DS4SVMPredictor.pkl'),
+            DS4XGBoostPredictor(self.__ds4_preprocessor, './Alpha/models/DS4XGBoostPredictor.pkl')
         ]
         for predictor in predictors:
-            self.__run_predictor('hospital_death', predictor, "ds4", nearest_neighbor_row_ds4, evaluator)
+            self.__run_predictor('hospital_death', "ds4", nearest_neighbor_row_ds4, predictor, evaluator)
     
-    def __run_predictor(self, target_column, predictor, ds_name, nearest_neighbor_row, evaluator):
+    def __run_predictor(self, target_column: str, ds_name: str, nearest_neighbor_row: pd.Series, predictor: Predictor, evaluator: PredictionEvaluator):
         print(f"Predicting {target_column} using {predictor.__class__.__name__} on {ds_name}")
         predictor.train_model()
         prediction = predictor.predict(nearest_neighbor_row)
