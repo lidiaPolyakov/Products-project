@@ -20,7 +20,7 @@ from knn_data_processor import KNNDataProcessor
 from prediction_evaluator import PredictionEvaluator
 
 class RiskAssessor:
-    def __init__(self, data_inputer: DataInputer, common_columns, ds2_doctor_vote=1, ds4_doctor_vote=1):
+    def __init__(self, data_inputer: DataInputer, common_columns):
         self.__data_inputer = data_inputer
         self.__common_columns = common_columns
         
@@ -29,19 +29,16 @@ class RiskAssessor:
         
         df4 = pd.read_csv('./Alpha/datasets/dataset4.csv')
         self.__ds4_preprocessor = DS4PreProcessor(df4)
-        
-        self.__evaluator = PredictionEvaluator(
+
+    def calculate_risk(self, query=None, ds2_doctor_vote=1, ds4_doctor_vote=1):
+        evaluator = PredictionEvaluator(
             ds2={ "doctor_votes": ds2_doctor_vote, "num_rows": self.__ds2_preprocessor.number_of_rows() },
             ds4={ "doctor_votes": ds4_doctor_vote, "num_rows": self.__ds4_preprocessor.number_of_rows() }
         )
-
-    def calculate_risk(self, query=None):
-        self.__query_ds2, self.__query_ds4 = self.__data_inputer.prepare_queries(query)
-
-        self.__ds2(self.__common_columns, self.__ds2_preprocessor, self.__evaluator, self.__query_ds2)
-        self.__ds4(self.__common_columns, self.__ds4_preprocessor, self.__evaluator, self.__query_ds4)
-
-        return self.__evaluator.evaluate_risk_assessment()
+        query_ds2, query_ds4 = self.__data_inputer.prepare_queries(query)
+        self.__ds2(self.__common_columns, self.__ds2_preprocessor, evaluator, query_ds2)
+        self.__ds4(self.__common_columns, self.__ds4_preprocessor, evaluator, query_ds4)
+        return evaluator.evaluate_risk_assessment()
 
     def __ds2(self, common_columns, preprocessor, evaluator, query_ds2):
         knn_data_processor_ds2 = KNNDataProcessor(common_columns, preprocessor.get_preprocessed_data, "ds2", query_ds2)

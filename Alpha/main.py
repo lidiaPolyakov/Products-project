@@ -10,9 +10,7 @@ if __name__ == '__main__':
     
     risk_assessor = RiskAssessor(
         data_inputer=data_inputer,
-        common_columns=common_columns,
-        ds2_doctor_vote=3,
-        ds4_doctor_vote=2
+        common_columns=common_columns
     )
     
     query = {
@@ -30,5 +28,9 @@ if __name__ == '__main__':
     else:
         validated_data = data_inputer.get_valid_input(query)
     
-    risk = risk_assessor.calculate_risk(query=validated_data)
+    risk = risk_assessor.calculate_risk(
+        query=validated_data,
+        ds2_doctor_vote=3,
+        ds4_doctor_vote=2
+    )
     print(f"Risk assessment: {risk}")
