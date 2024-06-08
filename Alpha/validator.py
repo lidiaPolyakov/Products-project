@@ -9,7 +9,6 @@ class Validator:
     def __init__(self, data_inputer: DataInputer, risk_assessor: RiskAssessor):
         self.__data_inputer = data_inputer
         self.__risk_assessor = risk_assessor
-        pass
     
     def validate_ds2(self):
         """
