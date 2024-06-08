@@ -22,7 +22,9 @@ class Predictor(ABC):
         X_test, y_test = self.preprocessor.get_test_encoded
         y_pred = self.model.predict(X_test)
         y_pred = (y_pred > 0.5).astype(int)
-        return classification_report(y_test, y_pred, output_dict=True, zero_division=0)
+        report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
+        report['name'] = self.__class__.__name__
+        return report
 
     def predict(self, row):
         """
