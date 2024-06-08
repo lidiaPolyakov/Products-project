@@ -2,7 +2,6 @@ import json
 from data_inputer import DataInputer
 
 from risk_assessor import RiskAssessor
-from validator import Validator
 
 if __name__ == '__main__':
     with open('./Alpha/common_columns.json') as f:
