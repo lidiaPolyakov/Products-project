@@ -245,5 +245,22 @@
                 "ds4": "creatinine_apache"
             }
         }
+    },
+	{
+        "datatype": "float",
+        "standard_column_name": "urine",
+        "mandatory": false,
+        "standard_input_values": {
+            "range": [
+                0.0,
+                30000000.0
+            ]
+        },
+        "column": {
+            "name": {
+                "ds2": null,
+                "ds4": "urineoutput_apache"
+            }
+        }
     }
 ]

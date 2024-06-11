@@ -29,10 +29,14 @@ class Validator:
         self.__validate_dataset(X_test, y_test, 100, "ds4")
 
     def validate_ckd(self):
-        pass
+        X = self.__ckd.drop("class", axis=1)
+        y = self.__ckd["class"]
+        self.__validate_dataset(X, y, 20, "ds4")
 
     def validate_disease(self):
-        pass
+        X = self.__disease.drop("Critical", axis=1)
+        y = self.__disease["Critical"]
+        self.__validate_dataset(X, y, 50, "ds4")
 
     def __validate_dataset(self, X_test, y_test, part, ds_name):
         # initialize the mean squared error
@@ -50,7 +54,13 @@ class Validator:
             _, risk_percentage = self.__risk_assessor.calculate_risk(validated_data)
 
             # calculate the squared error between the risk percentage and y_test
-            mean_squared_error += (risk_percentage - y_test[i]) ** 2
+            if(y_test[i] == 'ckd'):
+                y_test[i] = 1
+            elif(y_test[i] == 'notckd'):
+                y_test[i] = 0   
+            mean_squared_error += (risk_percentage -  y_test[i]) ** 2
+            res = (mean_squared_error / len(X_test))
+            print(res)
 
         # calculate the mean squared error
         return mean_squared_error / len(X_test)

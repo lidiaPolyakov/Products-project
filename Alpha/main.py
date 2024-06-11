@@ -26,14 +26,18 @@ if __name__ == '__main__':
         'urine': 12.1824
     }
     
-    if query is None:
-        validated_data = data_inputer.get_mock_data()
-    else:
-        validated_data = data_inputer.get_valid_input(query)
+    # if query is None:
+    #     validated_data = data_inputer.get_mock_data()
+    # else:
+    #     validated_data = data_inputer.get_valid_input(query)
     
-    risk = risk_assessor.calculate_risk(query=validated_data)
-    print(f"Risk assessment: {risk}")
+    # risk = risk_assessor.calculate_risk(query=validated_data)
+    # print(f"Risk assessment: {risk}")
     
     validator = Validator(data_inputer, risk_assessor)
-    validator.validate_ds2()
-    validator.validate_ds4()
+
+    validator.validate_ckd()
+    # validator.validate_disease()
+    # validator.validate_disease()
+    # validator.validate_ds2()
+    # validator.validate_ds4()
