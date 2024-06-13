@@ -54,9 +54,9 @@ class Validator:
             _, risk_percentage = self.__risk_assessor.calculate_risk(validated_data)
 
             # calculate the squared error between the risk percentage and y_test
-            if(y_test[i] == 'ckd'):
+            if y_test[i] == 'ckd':
                 y_test[i] = 1
-            elif(y_test[i] == 'notckd'):
+            elif y_test[i] == 'notckd':
                 y_test[i] = 0   
             mean_squared_error += (risk_percentage -  y_test[i]) ** 2
             res = (mean_squared_error / len(X_test))
