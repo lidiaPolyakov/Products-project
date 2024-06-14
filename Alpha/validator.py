@@ -30,12 +30,12 @@ class Validator:
 
     def validate_ckd(self):
         X_test = self.__ckd.drop("class", axis=1)
-        y_test = self.__ckd["class"].replace({'ckd': 1, 'notckd': 0})
-        self.__validate_dataset(X_test, y_test, 20, "ds4")
+        y_test = self.__ckd["class"]
+        self.__validate_dataset(X_test, y_test, 20, "ckd")
 
     def validate_disease(self):
         X = self.__disease.drop("Critical", axis=1)
-        y = self.__disease["Critical"]
+        y = self.__disease["Critical"].replace({'Critical': 1, 'Not Critical': 0})
         self.__validate_dataset(X, y, 50, "ds4")
 
     def __validate_dataset(self, X_test, y_test, part, ds_name):

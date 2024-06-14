@@ -79,11 +79,12 @@ class DataInputer:
         return query_for_ds2, query_for_ds4
 
     def translate_ds_columns_to_standard(self, ds_name, ds_columns):
-        if ds_name not in ["ds2", "ds4"]:
+        if ds_name not in ["ds2", "ds4", "ckd"]:
             raise ValueError("Invalid dataset name")
         translated_columns = {}
         for common_column in self.__common_columns:
             standard_column_name = common_column["standard_column_name"]
+            if common_column["column"]["name"].get(ds_name) is None: continue
             column_name = common_column["column"]["name"][ds_name]
             if column_name is not None and column_name in ds_columns:
                 translated_columns[standard_column_name] = ds_columns[column_name]

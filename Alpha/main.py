@@ -38,6 +38,5 @@ if __name__ == '__main__':
 
     validator.validate_ckd()
     # validator.validate_disease()
-    # validator.validate_disease()
     # validator.validate_ds2()
     # validator.validate_ds4()
