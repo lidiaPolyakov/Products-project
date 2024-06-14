@@ -34,11 +34,6 @@ class Validator:
         y_test = self.__ckd["class"]
         self.__validate_dataset(X_test, y_test, 5, "ckd")
 
-    def validate_disease(self):
-        X = self.__disease.drop("Critical", axis=1)
-        y = self.__disease["Critical"].replace({'Critical': 1, 'Not Critical': 0})
-        self.__validate_dataset(X, y, 50, "ds4")
-
     def __validate_dataset(self, X_test, y_test, num_of_rows, ds_name, is_random=True):
         # initialize the mean squared error
         mean_squared_error = 0
