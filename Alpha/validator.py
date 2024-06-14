@@ -1,4 +1,5 @@
 import pandas as pd
+import random
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -19,32 +20,35 @@ class Validator:
         Validate the risk assessment for dataset 4
         """
         X_test, y_test = self.__risk_assessor.ds2_test_data
-        self.__validate_dataset(X_test, y_test, 20, "ds2")
+        self.__validate_dataset(X_test, y_test, 5, "ds2")
         
     def validate_ds4(self):
         """
         Validate the risk assessment for dataset 4
         """
         X_test, y_test = self.__risk_assessor.ds4_test_data
-        self.__validate_dataset(X_test, y_test, 100, "ds4")
+        self.__validate_dataset(X_test, y_test, 5, "ds4")
 
     def validate_ckd(self):
         X_test = self.__ckd.drop("class", axis=1)
         y_test = self.__ckd["class"]
-        self.__validate_dataset(X_test, y_test, 20, "ckd")
+        self.__validate_dataset(X_test, y_test, 5, "ckd")
 
     def validate_disease(self):
         X = self.__disease.drop("Critical", axis=1)
         y = self.__disease["Critical"].replace({'Critical': 1, 'Not Critical': 0})
         self.__validate_dataset(X, y, 50, "ds4")
 
-    def __validate_dataset(self, X_test, y_test, part, ds_name):
+    def __validate_dataset(self, X_test, y_test, num_of_rows, ds_name, is_random=True):
         # initialize the mean squared error
         mean_squared_error = 0
         
+        X_test_len = len(X_test)
+        
         # for each row in X_test
-        for i in range(len(X_test) // part):
-            row = X_test.iloc[i].to_dict()
+        for i in range(num_of_rows):
+            index = random.randint(0, X_test_len - 1) if is_random else i
+            row = X_test.iloc[index].to_dict()
 
             # prepare the query by the data inputer
             query = self.__data_inputer.translate_ds_columns_to_standard(ds_name, row)
@@ -54,8 +58,8 @@ class Validator:
             _, risk_percentage = self.__risk_assessor.calculate_risk(validated_data)
 
             # calculate the squared error between the risk percentage and y_test
-            mean_squared_error += (risk_percentage -  y_test[i]) ** 2
-            res = (mean_squared_error / len(X_test))
+            mean_squared_error += (risk_percentage - y_test[index]) ** 2
+            res = (mean_squared_error / X_test_len)
             print(res)
 
         # calculate the mean squared error
