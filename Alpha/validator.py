@@ -59,8 +59,8 @@ class Validator:
 
             # calculate the squared error between the risk percentage and y_test
             mean_squared_error += (risk_percentage - y_test[index]) ** 2
-            res = (mean_squared_error / X_test_len)
-            print(res)
+
+            print(f"Iteration {i + 1}: {mean_squared_error / X_test_len}")
 
         # calculate the mean squared error
         return mean_squared_error / len(X_test)
