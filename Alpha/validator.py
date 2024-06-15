@@ -17,26 +17,32 @@ class Validator:
         self.__ckd = pd.read_csv('./Alpha/datasets/validation sets/ckd.csv')
         self.__disease = pd.read_csv('./Alpha/datasets/validation sets/Disease.csv')
     
-    def validate_ds2(self):
+    def validate_ds2(self, votes):
         """
-        Validate the risk assessment for dataset 4
+        Validate the risk assessment for dataset 2 with specified doctor votes
         """
         X_test, y_test = self.__risk_assessor.ds2_test_data
-        return self.__validate_dataset(X_test, y_test, 5, "ds2")
+        return self.__validate_dataset(X_test, y_test, 5, "ds2", votes)
         
-    def validate_ds4(self):
+    def validate_ds4(self, votes):
         """
-        Validate the risk assessment for dataset 4
+        Validate the risk assessment for dataset 4 with specified doctor votes
         """
         X_test, y_test = self.__risk_assessor.ds4_test_data
-        return self.__validate_dataset(X_test, y_test, 5, "ds4")
+        return self.__validate_dataset(X_test, y_test, 5, "ds4", votes)
 
-    def validate_ckd(self):
+    def validate_ckd(self, votes):
+        """
+        Validate the risk assessment for ckd with specified doctor votes
+        """
         X_test = self.__ckd.drop("class", axis=1)
         y_test = self.__ckd["class"].replace({"ckd": 1, "notckd": 0})
-        return self.__validate_dataset(X_test, y_test, 5, "ckd")
+        return self.__validate_dataset(X_test, y_test, 5, "ckd", votes)
 
-    def __validate_dataset(self, X_test, y_test, num_of_rows, ds_name, is_random=True):
+
+    def __validate_dataset(self, X_test, y_test, num_of_rows, ds_name, votes, is_random=False):
+        ds2_vote, ds4_vote = votes
+
         # initialize the mean squared error
         mean_squared_error = 0
         
@@ -52,7 +58,7 @@ class Validator:
             validated_data = self.__data_inputer.get_valid_input(query, is_discard_errors=True)
             
             # call calculate_risk and get the risk percentage
-            _, risk_percentage, _ = self.__risk_assessor.calculate_risk(validated_data)
+            _, risk_percentage, _ = self.__risk_assessor.calculate_risk(validated_data, ds2_doctor_vote=ds2_vote, ds4_doctor_vote=ds4_vote)
 
             # calculate the squared error between the risk percentage and y_test
             mean_squared_error += (risk_percentage - y_test[index]) ** 2
@@ -61,3 +67,28 @@ class Validator:
 
         # calculate the mean squared error
         return mean_squared_error / len(X_test)
+
+    def validate_scenarios(self):
+        scenarios = [
+            (0, 5),
+            (5, 0),
+            (3, 3),
+            (1, 4),
+            (4, 1)
+        ]
+        
+        results = []
+        
+        for votes in scenarios:
+            mse_ds2 = self.validate_ds2(votes)
+            mse_ds4 = self.validate_ds4(votes)
+            mse_ckd = self.validate_ckd(votes)
+            
+            results.append({
+                "Votes": f"{votes[0]} - {votes[1]}",
+                "ds2": mse_ds2,
+                "ds4": mse_ds4,
+                "ckd": mse_ckd
+            })
+        
+        return pd.DataFrame(results).set_index("Votes")

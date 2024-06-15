@@ -38,7 +38,12 @@ if __name__ == '__main__':
     
     validator = Validator(data_inputer, risk_assessor)
 
-    # validator.validate_ds2()
-    # validator.validate_ds4()
-    mse = validator.validate_ckd()
-    print(f"Mean squared error of ckd: {mse}")
+    # mse_ds2 = validator.validate_ds2()
+    # mse_ds4 = validator.validate_ds4()
+    # mse_ckd = validator.validate_ckd()
+
+    # print(f"Mean squared error for dataset 2: {mse_ds2}")
+    # print(f"Mean squared error for dataset 4: {mse_ds4}")
+    # print(f"Mean squared error for ckd: {mse_ckd}")
+    
+    print(validator.validate_scenarios())
