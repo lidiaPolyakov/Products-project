@@ -55,6 +55,7 @@ class RiskAssessor:
     def __ds2(self, evaluator: PredictionEvaluator, query_ds2):
         knn_data_processor_ds2 = KNNDataProcessor(self.__common_columns, self.__ds2_preprocessor.get_preprocessed_data, "ds2", query_ds2)
         nearest_neighbor_row_ds2 = knn_data_processor_ds2.find_nearest_neighbor()
+        if nearest_neighbor_row_ds2 is None: return
         predictors = [
             DS2XGBoostPredictor(self.__ds2_preprocessor, './Alpha/models/DS2XGBoostPredictor.pkl'),
             DS2SVMPredictor(self.__ds2_preprocessor, './Alpha/models/DS2SVMPredictor.pkl'),
@@ -67,6 +68,7 @@ class RiskAssessor:
     def __ds4(self, evaluator: PredictionEvaluator, query_ds4):
         knn_data_processor_ds4 = KNNDataProcessor(self.__common_columns, self.__ds4_preprocessor.get_preprocessed_data, "ds4", query_ds4)
         nearest_neighbor_row_ds4 = knn_data_processor_ds4.find_nearest_neighbor()
+        if nearest_neighbor_row_ds4 is None: return
         predictors = [
             DS4NNPredictor(self.__ds4_preprocessor, './Alpha/models/DS4NNPredictor.keras'),
             DS4NaiveBayesPredictor(self.__ds4_preprocessor, './Alpha/models/DS4NaiveBayesPredictor.pkl'),

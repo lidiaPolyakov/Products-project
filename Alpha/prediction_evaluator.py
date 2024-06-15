@@ -56,16 +56,18 @@ class PredictionEvaluator:
         weight_doctor_votes_ds4 = doctor_votes_ds4 / (doctor_votes_ds2 + doctor_votes_ds4)
         
         ds2 = 0
-        for model in self.__models_for_ds2:
-            ds2 += model['prediction'] * model['accuracy']
-        ds2 /= len(self.__models_for_ds2)
-        ds2 *= (weight_doctor_votes_ds2 + weight_num_rows_ds2) / 2
+        if len(self.__models_for_ds2) != 0:
+            for model in self.__models_for_ds2:
+                ds2 += model['prediction'] * model['accuracy']
+            ds2 /= len(self.__models_for_ds2)
+            ds2 *= (weight_doctor_votes_ds2 + weight_num_rows_ds2) / 2
         
         ds4 = 0
-        for model in self.__models_for_ds4:
-            ds4 += model['prediction'] * model['accuracy']
-        ds4 /= len(self.__models_for_ds4)
-        ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4) / 2
+        if len(self.__models_for_ds4) != 0:
+            for model in self.__models_for_ds4:
+                ds4 += model['prediction'] * model['accuracy']
+            ds4 /= len(self.__models_for_ds4)
+            ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4) / 2
         
         risk_precentage = ds2 + ds4
         models = self.__models_for_ds2 + self.__models_for_ds4

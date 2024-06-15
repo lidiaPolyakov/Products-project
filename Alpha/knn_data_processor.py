@@ -162,6 +162,7 @@ class KNNDataProcessor:
         intersection_columns = [col for col in relevant_columns if col in self.processed_input]
         
         df_processed_relevant = df_copy[intersection_columns]
+        if df_processed_relevant.empty: return None
 
         knn = NearestNeighbors(n_neighbors=n_neighbors, algorithm='brute', metric=self.nearest_neighbor_metric)
         knn.fit(df_processed_relevant)
