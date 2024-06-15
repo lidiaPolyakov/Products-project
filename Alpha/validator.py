@@ -7,6 +7,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from data_inputer import DataInputer
 from risk_assessor import RiskAssessor
 
+pd.set_option('future.no_silent_downcasting', True)
+
 class Validator:
     def __init__(self, data_inputer: DataInputer, risk_assessor: RiskAssessor):
         self.__data_inputer = data_inputer
@@ -20,19 +22,19 @@ class Validator:
         Validate the risk assessment for dataset 4
         """
         X_test, y_test = self.__risk_assessor.ds2_test_data
-        self.__validate_dataset(X_test, y_test, 5, "ds2")
+        return self.__validate_dataset(X_test, y_test, 5, "ds2")
         
     def validate_ds4(self):
         """
         Validate the risk assessment for dataset 4
         """
         X_test, y_test = self.__risk_assessor.ds4_test_data
-        self.__validate_dataset(X_test, y_test, 5, "ds4")
+        return self.__validate_dataset(X_test, y_test, 5, "ds4")
 
     def validate_ckd(self):
         X_test = self.__ckd.drop("class", axis=1)
-        y_test = self.__ckd["class"]
-        self.__validate_dataset(X_test, y_test, 5, "ckd")
+        y_test = self.__ckd["class"].replace({"ckd": 1, "notckd": 0})
+        return self.__validate_dataset(X_test, y_test, 5, "ckd")
 
     def __validate_dataset(self, X_test, y_test, num_of_rows, ds_name, is_random=True):
         # initialize the mean squared error
@@ -50,12 +52,12 @@ class Validator:
             validated_data = self.__data_inputer.get_valid_input(query, is_discard_errors=True)
             
             # call calculate_risk and get the risk percentage
-            _, risk_percentage = self.__risk_assessor.calculate_risk(validated_data)
+            _, risk_percentage, _ = self.__risk_assessor.calculate_risk(validated_data)
 
             # calculate the squared error between the risk percentage and y_test
             mean_squared_error += (risk_percentage - y_test[index]) ** 2
 
-            print(f"Iteration {i + 1}: {mean_squared_error / X_test_len}")
+            print(f"Iteration {i + 1}: {mean_squared_error / (i + 1)}")
 
         # calculate the mean squared error
         return mean_squared_error / len(X_test)

@@ -246,7 +246,7 @@
         "column": {
             "name": {
                 "ds2": null,
-                "ds4": "potassium_apache",
+                "ds4": "d1_potassium_max",
                 "ckd": "pot"
             }
         }

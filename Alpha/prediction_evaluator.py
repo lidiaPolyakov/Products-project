@@ -31,7 +31,8 @@ class PredictionEvaluator:
 
         arr(ds_name).append({
             "prediction": prediction,
-            "accuracy": evaluation['accuracy']
+            "accuracy": evaluation['accuracy'],
+            "name": evaluation['name']
         })
 
     def evaluate_risk_assessment(self):
@@ -67,12 +68,13 @@ class PredictionEvaluator:
         ds4 *= (weight_doctor_votes_ds4 + weight_num_rows_ds4) / 2
         
         risk_precentage = ds2 + ds4
+        models = self.__models_for_ds2 + self.__models_for_ds4
         
         if (2/3) < risk_precentage <= 1:
-            return "high", risk_precentage
+            return "high", risk_precentage, models
         
         if (1/3) <= risk_precentage <= (2/3):
-            return "medium", risk_precentage
+            return "medium", risk_precentage, models
         
-        return "low", risk_precentage
+        return "low", risk_precentage, models
 
