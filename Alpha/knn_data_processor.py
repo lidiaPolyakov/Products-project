@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.neighbors import NearestNeighbors
 
+import time
+
 class KNNDataProcessor:
     def __init__(self, common_columns, df, df_name, user_input):
         self.common_columns = common_columns
@@ -168,7 +170,14 @@ class KNNDataProcessor:
         knn.fit(df_processed_relevant)
 
         knn_input_df = pd.DataFrame([self.processed_input], columns=intersection_columns)
+        
+        start = time.time()
+        
         nearest_neighbors_indices = knn.kneighbors(knn_input_df, return_distance=False)[0]
+        
+        end = time.time()
+        
+        print(f"Time taken to find nearest neighbors: {end - start} seconds")
 
         # get the row of original values for the nearest neighbor
         rows = df_copy.iloc[nearest_neighbors_indices].copy()

@@ -1,16 +1,15 @@
 import os
 import joblib
-
-from sklearn.svm import SVC 
+from sklearn.svm import LinearSVC 
 
 from predictor import Predictor
 
-class DS4SVMPredictor(Predictor):
+class DS4LinearSVMPredictor(Predictor):
     def __init__(self, preprocessor, path):
         super().__init__(preprocessor, path)
 
     def build_model(self, X_train, y_train):
-        svm_model = SVC(probability=True)
+        svm_model = LinearSVC()
         model = svm_model.fit(X_train, y_train)
         return model
 

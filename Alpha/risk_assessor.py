@@ -12,7 +12,7 @@ from ds2.ds2_decision_tree_predictor import DS2DecisionTreePredictor
 
 from ds4.ds4_nn_predictor import DS4NNPredictor
 from ds4.ds4_naive_bayes_predictor import DS4NaiveBayesPredictor
-from ds4.ds4_svm_predictor import DS4SVMPredictor
+from Alpha.ds4.ds4_linear_svm_predictor import DS4LinearSVMPredictor
 from ds4.ds4_xgboost_predictor import DS4XGBoostPredictor
 
 from knn_data_processor import KNNDataProcessor
@@ -72,7 +72,7 @@ class RiskAssessor:
         predictors = [
             DS4NNPredictor(self.__ds4_preprocessor, './Alpha/models/DS4NNPredictor.keras'),
             DS4NaiveBayesPredictor(self.__ds4_preprocessor, './Alpha/models/DS4NaiveBayesPredictor.pkl'),
-            DS4SVMPredictor(self.__ds4_preprocessor, './Alpha/models/DS4SVMPredictor.pkl'),
+            DS4LinearSVMPredictor(self.__ds4_preprocessor, './Alpha/models/DS4LinearSVMPredictor.pkl'),
             DS4XGBoostPredictor(self.__ds4_preprocessor, './Alpha/models/DS4XGBoostPredictor.pkl')
         ]
         for predictor in predictors:
