@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.home {
+  font-family: "Montserrat";
+  display: flex;
+}
+
+.main-content {
+  margin-left: 250px; /* This should be equal to the width of your navbar */
+  width: 100%; /* Adjust the width accordingly */
+}
+
+.add-product-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px; /* Space between search input and button */
+  margin-bottom: 20px;
+}
+
+.add-product-button:hover {
+  background-color: #0056b3;
+}
+
+.search-and-add {
+  display: flex;
+  align-items: center; /* Center items vertically */
+  margin-bottom: 20px; /* Space below the search and add section */
+}
+
+.search-input {
+  padding: 20px; /* Adjust padding for input */
+  border: 1px solid #ccc; /* Add border to input */
+  border-radius: 4px; /* Rounded corners for input */
+  margin-right: 10px; /* Space between input and button */
+  flex: 1; /* Allow the input to grow */
+  font-size: 20px;
+}
+
+.home.blurred .main-content {
+  filter: blur(5px);
+  pointer-events: none;
+}

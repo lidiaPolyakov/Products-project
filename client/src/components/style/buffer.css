@@ -1,0 +1,14 @@
+.buffer {
+    background: #d4cece;
+    padding: 50px 0;
+    text-align: left;
+    position: fixed;
+    width:100%;
+    bottom: 0;
+    left: 258px;
+  }
+  
+  .buffer p {
+    font-size: 1.2rem;
+    color: #444;
+  }
