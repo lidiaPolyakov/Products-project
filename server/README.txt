@@ -14,5 +14,5 @@ npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons
 
 mongod --dbpath C:\Users\Lidia Polyakov\mongodata
 Make sure MongoDB is running (mongod).
-Start your server (node server/server.js).
+Start your server (node --env-file=.env server/server.js).
 Start your React app (cd client && npm start).

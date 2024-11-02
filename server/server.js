@@ -1,4 +1,5 @@
 // server.js
+require('dotenv').config()
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -12,11 +13,25 @@ const productRoutes = require('./routes/product');
 const app = express();
 const port = 5000;
 const jwtSecret = 'your_jwt_secret';
+const mongoUsername = process.env.MONGO_USERNAME;
+const mongoPassword = process.env.MONGO_PASSWORD;
+const uri = `mongodb+srv://${mongoUsername}:${mongoPassword}@lidiaapp.fsexp.mongodb.net/?retryWrites=true&w=majority&appName=LidiaApp`;
+const clientOptions = {
+  serverApi: { version: '1', strict: true, deprecationErrors: true}
+};
+async function run() {
+  try {
+    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
+    await mongoose.connect(uri, clientOptions);
+    await mongoose.connection.db.admin().command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+  }
+}
+run().catch(console.dir);
 
-mongoose.connect('mongodb://127.0.0.1:27017/loginapp', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+
 
 app.use(cors());
 app.use(express.json());

@@ -15,11 +15,10 @@ const Product = ({ product, onEdit, onDelete }) => {
         </button>
       </div>
       <h3>Product Name: {product.productName}</h3>
-      <p>Number: {product.number}</p>
+      <p>Number: {product.productNumber}</p>
       <p>SKU: {product.productSKU}</p>
       <p>Description: {product.productDescription}</p>
       <p>Type: {product.productType}</p>
-      {/* <p>Marketing Date: {product.productMarketingDate}</p> */}
       <p>Marketing Date: {new Date(product.productMarketingDate).toLocaleDateString()}</p>
     </div>
   );
