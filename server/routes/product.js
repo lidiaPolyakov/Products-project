@@ -2,36 +2,47 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-router.post('/', async (req, res) => {
-  const { title, description, date, price } = req.body;
-  let product = new Product({title, description, date, price});
-  await product.save();
-  res.json({ message: 'Saved successful!' });
-  
-});
-
-
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { title, description, date, price } = req.body;
-  try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { title, description, date, price },
-      { new: true }
-    );
-    res.json({ message: 'Saved successful!' });
+router.post('/', async (req, res) => {  
+  const { productName, productSKU, productDescription, productType, productMarketingDate } = req.body;
+  let product = new Product({productName, productSKU, productDescription, productType, productMarketingDate});
+  const existingProduct = await Product.findOne({ productSKU });
+  if (existingProduct) {
+    return res.status(409).json({ error: 'Duplicate SKU detected' }); // Use HTTP 409 Conflict status  
+  }
+  try { 
+    await product.save();
+    res.json({ message: 'Product saved successfully!' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-// Get products (optionally filtered by title)
-router.get('/', async (req, res) => {
-  const { title } = req.query;
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { productName, productSKU, productDescription, productType, productMarketingDate } = req.body;
+
   try {
-    const products = title
-      ? await Product.find({ title: { $regex: title, $options: 'i' } })
+    const existingProduct = await Product.findOne({ productSKU, _id: { $ne: id } });
+    if (existingProduct) {
+      return res.status(409).json({ error: 'Duplicate SKU detected' });
+    }
+
+    await Product.findByIdAndUpdate(
+      id,
+      { productName, productSKU, productDescription, productType, productMarketingDate },
+      { new: true }
+    );
+    res.json({ message: 'Product updated successfully!' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/', async (req, res) => {
+  const { productName } = req.query;
+  try {
+    const products = productName
+      ? await Product.find({ productName: { $regex: productName, $options: 'i' } })
       : await Product.find();
     res.json(products);
   } catch (err) {
@@ -39,16 +50,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 // Delete a product
 router.delete('/:id', async (req, res) => {
-
   const { id } = req.params;
   try {
     const deletedProduct = await Product.findByIdAndDelete(id);
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
+    res.json({ message: 'Product deleted successfully!' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -60,55 +70,3 @@ module.exports = router;
 
 
 
-
-
-
-
-
-
-
-
-
-
-// const express = require('express');
-// const router = express.Router();
-// const Ticket = require('../models/Ticket');
-
-// // Create a new ticket
-// router.post('/', async (req, res) => {
-//   const { title, description, date, price } = req.body;
-//   try {
-//     const newTicket = new Ticket({ title, description, date, price });
-//     await newTicket.save();
-//     res.status(201).json(newTicket);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
-
-
-
-// // Update a ticket
-// router.put('/:id', async (req, res) => {
-//   const { id } = req.params;
-//   const { title, description, date, price } = req.body;
-//   try {
-//     const updatedTicket = await Ticket.findByIdAndUpdate(id, { title, description, date, price }, { new: true });
-//     res.status(200).json(updatedTicket);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
-
-// // Delete a ticket
-// router.delete('/:id', async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     await Ticket.findByIdAndDelete(id);
-//     res.status(200).json({ message: 'Ticket deleted successfully' });
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
-
-// module.exports = router;

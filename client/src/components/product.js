@@ -14,10 +14,13 @@ const Product = ({ product, onEdit, onDelete }) => {
           <FontAwesomeIcon icon={faTrashAlt} />
         </button>
       </div>
-      <h3>{product.title}</h3>
-      <p>{product.description}</p>
-      <p>Date: {product.date}</p>
-      <p>Price: ${product.price}</p>
+      <h3>Product Name: {product.productName}</h3>
+      <p>Number: {product.number}</p>
+      <p>SKU: {product.productSKU}</p>
+      <p>Description: {product.productDescription}</p>
+      <p>Type: {product.productType}</p>
+      {/* <p>Marketing Date: {product.productMarketingDate}</p> */}
+      <p>Marketing Date: {new Date(product.productMarketingDate).toLocaleDateString()}</p>
     </div>
   );
 };

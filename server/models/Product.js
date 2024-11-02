@@ -1,21 +1,40 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  title: {
+  // number: {
+  //   type: Number,
+  //   default: function() {
+  //     return autoIncrement++;
+  //   },
+  //   unique: true,
+  //   immutable: true,
+  // },
+  productName: {
     type: String,
     required: true,
+    maxlength: 50,
   },
-  description: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    required: true,
-  },
-  price: {
+  productSKU: {
     type: Number,
     required: true,
+    unique: true,
+    min: 0,
+  },
+  productDescription: {
+    type: String,
+  },
+  productType: {
+    type: String,
+    required: true,
+    enum: ['vegetable', 'fruit', 'field crops'],
+  },
+  productMarketingDate: {
+    type: Date,
+    default: function() {
+      const today = new Date();
+      today.setDate(today.getDate() - 7);
+      return today;
+    },
   },
 });
 

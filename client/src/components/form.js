@@ -3,78 +3,128 @@ import axios from 'axios';
 
 import './style/form.css';
 
-
 const Form = ({ product }) => {
   const [formData, setFormData] = useState(product);
-  const [title, settitle] = useState('');
-  const [description, setdescription] = useState('');
-  const [date, setdate] = useState('');
-  const [price, setprice] = useState('');
+  const [productName, setProductName] = useState('');
+  const [productSKU, setProductSKU] = useState('');
+  const [productDescription, setProductDescription] = useState('');
+  const [productType, setProductType] = useState('vegetable'); // Default to 'vegetable'
+  const [productMarketingDate, setProductMarketingDate] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    // Set form data and other fields when the product prop changes
+    // Initialize form fields when the product prop changes
     setFormData(product || {});
-    settitle(product?.title || '');
-    setdescription(product?.description || '');
-    setdate(product?.date || '');
-    setprice(product?.price || '');
+    setProductName(product?.productName || '');
+    setProductSKU(product?.productSKU || '');
+    setProductDescription(product?.productDescription || '');
+    setProductType(product?.productType || 'vegetable');
+    // setProductMarketingDate(product?.productMarketingDate || '');
+    setProductMarketingDate(
+      product?.productMarketingDate 
+      ? new Date(product.productMarketingDate).toISOString().slice(0, 10) 
+      : (() => {
+          const date = new Date(); 
+          date.setDate(date.getDate() - 7); 
+          return date.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+        })() 
+    );
   }, [product]);
 
-  
   const handleSubmit = async (e) => {
-    e.preventDefault();  
-    // Update formData with the current input values
+    e.preventDefault();
     const updatedFormData = {
-      title,
-      description,
-      date,
-      price,
+      productName,
+      productSKU,
+      productDescription,
+      productType,
+      productMarketingDate,
     };
+    
     try {
       if (product?._id) {
+        // Update existing product
         const response = await axios.put(`http://localhost:5000/product/${product._id}`, updatedFormData);
-        console.log("im in edit:", product._id);
         setMessage(response.data.message);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         window.location.reload();
       } else {
+        // Create new product
         const response = await axios.post('http://localhost:5000/product', updatedFormData);
-        console.log("im in create:", product._id);
         setMessage(response.data.message);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         window.location.reload();
       }
     } catch (error) {
-      setMessage('product failed. Please try again.'); 
+      if (error.response.status === 409) {
+        setMessage('SKU already exists. Please use a unique SKU.'); 
+      } else {
+        setMessage('Product submission failed. Please try again.');
+      }
     }
   };
-  
+
   const handleClose = () => {
     window.location.reload();
   };
-  
+
   if (!formData) return null;
   return (
     <div className="product-modal">
-      <div className="product-form" value={formData} onChange={(e) => setFormData(e.target.value)}>
-        <h2>{formData.title ? formData.title : "New Product"}</h2>
+      <div className="product-form">
+        <h2>{formData.productName ? formData.productName : 'New Product'}</h2>
         <form onSubmit={handleSubmit}>
           <label>
-            Title:
-            <input type="text" name="title" value={title} onChange={(e) => settitle(e.target.value)} />
+            Product Name:
+            <input
+              type="text"
+              name="productName"
+              value={productName}
+              maxLength="50"
+              required
+              onChange={(e) => setProductName(e.target.value)}
+            />
+          </label>
+          <label>
+            SKU:
+            <input
+              type="number"
+              name="productSKU"
+              value={productSKU}
+              min="0"
+              required
+              onChange={(e) => setProductSKU(e.target.value)}
+            />  
           </label>
           <label>
             Description:
-            <textarea name="description" value={description} onChange={(e) => setdescription(e.target.value)}></textarea>
+            <textarea
+              name="productDescription"
+              value={productDescription}
+              onChange={(e) => setProductDescription(e.target.value)}
+            ></textarea>
           </label>
           <label>
-            Date:
-            <input type="date" name="date" value={date} onChange={(e) => setdate(e.target.value)} />
+            Type:
+            <select
+              name="productType"
+              value={productType}
+              required
+              onChange={(e) => setProductType(e.target.value)}
+            >
+              <option value="vegetable">Vegetable</option>
+              <option value="fruit">Fruit</option>
+              <option value="field crops">Field Crops</option>
+            </select>
           </label>
           <label>
-            Price:
-            <input type="text" name="price" value={price} onChange={(e) => setprice(e.target.value)} />
+            Marketing Date:
+            <input
+              type="date"
+              name="productMarketingDate"
+              value={productMarketingDate}
+              onChange={(e) => setProductMarketingDate(e.target.value)}
+            />
           </label>
           <button type="submit">Save</button>
           <button type="button" onClick={handleClose}>Close</button>
@@ -84,4 +134,5 @@ const Form = ({ product }) => {
     </div>
   );
 };
+
 export default Form;
