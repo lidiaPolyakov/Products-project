@@ -15,5 +15,6 @@ MONGO_PASSWORD=bNwbrKQL5mgUvgzn
 client:
 
 1.cd Products-project/client
+
 2.npm install
 3.npm start
