@@ -8,6 +8,8 @@ Open 2 terminals - one for the client and one for the server
 
 2.npm install
 
+3.node server.js
+
 Please add the .env file into the server directory.
 the .env contains the DB connection user
 
