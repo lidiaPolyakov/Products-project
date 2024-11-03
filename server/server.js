@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('./models/user');
-const Product = require('./models/Product');
 const productRoutes = require('./routes/product');
 
 const app = express();
@@ -17,11 +16,10 @@ const mongoUsername = process.env.MONGO_USERNAME;
 const mongoPassword = process.env.MONGO_PASSWORD;
 const uri = `mongodb+srv://${mongoUsername}:${mongoPassword}@lidiaapp.fsexp.mongodb.net/?retryWrites=true&w=majority&appName=LidiaApp`;
 const clientOptions = {
-  serverApi: { version: '1', strict: true, deprecationErrors: true}
+  serverApi: { version: '1', strict: true, deprecationErrors: true }
 };
 async function run() {
   try {
-    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
     await mongoose.connect(uri, clientOptions);
     await mongoose.connection.db.admin().command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");

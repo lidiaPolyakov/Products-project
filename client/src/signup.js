@@ -1,5 +1,5 @@
-// src/Signup.js  
-import './form.css';
+
+import './style/logsign.css';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';

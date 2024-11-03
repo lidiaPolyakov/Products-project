@@ -3,10 +3,9 @@ import axios from 'axios';
 
 import Navbar from './components/navbar';
 import Header from './components/header';
-import Buffer from './components/buffer';
 import Form from './components/form';
 import Product from './components/product';
-import './home.css';
+import './style/home.css';
 
 const Home = () => {
   const [activeProduct, setActiveProduct] = useState(null);

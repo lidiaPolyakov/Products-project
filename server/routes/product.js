@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-router.post('/', async (req, res) => {  
+router.post('/', async (req, res) => {
   const { productName, productSKU, productDescription, productType, productMarketingDate } = req.body;
-  let product = new Product({productName, productSKU, productDescription, productType, productMarketingDate});
+  let product = new Product({ productName, productSKU, productDescription, productType, productMarketingDate });
+  // Check if the product SKU already exists
   const existingProduct = await Product.findOne({ productSKU });
   if (existingProduct) {
     return res.status(409).json({ error: 'Duplicate SKU detected' }); // Use HTTP 409 Conflict status  
   }
-  try { 
+  try {
     await product.save();
     res.json({ message: 'Product saved successfully!' });
   } catch (error) {
@@ -50,7 +51,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Delete a product
+
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {

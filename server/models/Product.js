@@ -1,14 +1,6 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  // number: {
-  //   type: Number,
-  //   default: function() {
-  //     return autoIncrement++;
-  //   },
-  //   unique: true,
-  //   immutable: true,
-  // },
   productName: {
     type: String,
     required: true,

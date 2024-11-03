@@ -3,12 +3,13 @@ import axios from 'axios';
 
 import './style/form.css';
 
+// Using the useState and useEffect hooks from React to manage the form state and handle form submission. 
 const Form = ({ product }) => {
   const [formData, setFormData] = useState(product);
   const [productName, setProductName] = useState('');
   const [productSKU, setProductSKU] = useState('');
   const [productDescription, setProductDescription] = useState('');
-  const [productType, setProductType] = useState('vegetable'); // Default to 'vegetable'
+  const [productType, setProductType] = useState('vegetable');
   const [productMarketingDate, setProductMarketingDate] = useState('');
   const [message, setMessage] = useState('');
 
@@ -19,15 +20,14 @@ const Form = ({ product }) => {
     setProductSKU(product?.productSKU || '');
     setProductDescription(product?.productDescription || '');
     setProductType(product?.productType || 'vegetable');
-    // setProductMarketingDate(product?.productMarketingDate || '');
     setProductMarketingDate(
-      product?.productMarketingDate 
-      ? new Date(product.productMarketingDate).toISOString().slice(0, 10) 
-      : (() => {
-          const date = new Date(); 
-          date.setDate(date.getDate() - 7); 
-          return date.toISOString().slice(0, 10); // 'YYYY-MM-DD'
-        })() 
+      product?.productMarketingDate
+        ? new Date(product.productMarketingDate).toISOString().slice(0, 10) //'YYYY-MM-DD' When product.productMarketingDate exists:
+        : (() => {
+          const date = new Date();
+          date.setDate(date.getDate() - 7);
+          return date.toISOString().slice(0, 10); // 'YYYY-MM-DD' When product.productMarketingDate does not exist
+        })()
     );
   }, [product]);
 
@@ -40,7 +40,7 @@ const Form = ({ product }) => {
       productType,
       productMarketingDate,
     };
-    
+
     try {
       if (product?._id) {
         // Update existing product
@@ -57,7 +57,7 @@ const Form = ({ product }) => {
       }
     } catch (error) {
       if (error.response.status === 409) {
-        setMessage('SKU already exists. Please use a unique SKU.'); 
+        setMessage('SKU already exists. Please use a unique SKU.');
       } else {
         setMessage('Product submission failed. Please try again.');
       }
@@ -94,7 +94,7 @@ const Form = ({ product }) => {
               min="0"
               required
               onChange={(e) => setProductSKU(e.target.value)}
-            />  
+            />
           </label>
           <label>
             Description:
