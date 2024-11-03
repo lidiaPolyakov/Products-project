@@ -1,6 +1,6 @@
 1.git clone https://github.com/lidiaPolyakov/Products-project.git -b mongo-cloud 
 
-Open 2 terminals - one for the client and one for the serve
+Open 2 terminals - one for the client and one for the server
 
 **server:**
 
