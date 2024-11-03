@@ -2,7 +2,8 @@
 
 Open 2 terminals - one for the client and one for the serve
 
-server:
+**server:**
+
 1.cd Products-project/server
 
 2.npm install
@@ -11,7 +12,7 @@ Please add the .env file into the server directory.
 the .env contains the DB connection user
 
 
-client:
+**client:**
 
 1.cd Products-project/client
 
