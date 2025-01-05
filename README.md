@@ -8,8 +8,6 @@ npm install
 
 Please add the .env file into the server directory.
 the .env contains the DB connection user:
-MONGO_USERNAME=lidiapolykov
-MONGO_PASSWORD=bNwbrKQL5mgUvgzn
 
 
 client:
