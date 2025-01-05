@@ -1,17 +1,16 @@
-git clone https://github.com/lidiaPolyakov/Products-project.git -b mongo-cloud 
+# Products Project
 
-Open 2 terminals - one for the client and one for the serve
+Start by cloning the repository to your local machine:
+```bash
+git clone https://github.com/lidiaPolyakov/Products-project.git -b mongo-cloud
 
-server:
-cd Products-project/server
-npm install
+## Description
+The **Products Project** is a full-stack application designed for managing products. The project includes a server-side API powered by MongoDB (hosted in the cloud) and a client-side interface built with modern web technologies.
 
-Please add the .env file into the server directory.
-the .env contains the DB connection user:
+## Prerequisites
+Before setting up the project, make sure you have the following installed:
+- **Node.js** (v14+ recommended)
+- **npm** (or yarn, depending on your preference)
 
 
-client:
 
-cd Products-project/client
-npm install
-npm start
